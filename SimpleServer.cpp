@@ -144,9 +144,10 @@ protected:
        std::cout << "i think i got: " << smsg << std::endl;
       -----------------------------------------------------*/
 
-      // READ IN THE STRING USING BOOST SERIALIZATION
-       std::string filename(boost::archive::tmpdir());
-       filename += "/demofile.txt";
+       // READ IN THE STRING USING BOOST SERIALIZATION
+       //std::string filename(boost::archive::tmpdir());
+       std::string filename("/home/pi");
+       filename += "/newfile.txt";
        Astr astr;
 
        restore_astr(astr, filename.c_str());

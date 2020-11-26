@@ -89,8 +89,9 @@ public:
 
     // USE BOOST SERIALIZATION
     // setup archive file to serialize to
-    std::string filename(boost::archive::tmpdir());
-    filename += "/demofile.txt";
+    //std::string filename(boost::archive::tmpdir());
+    std::string filename("/home/pi");
+    filename += "/newfile.txt";
 
     Astr astr(s);
     // dump string to file
