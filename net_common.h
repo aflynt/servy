@@ -119,6 +119,7 @@ public:
 private:
   std::string s;
 };
+BOOST_CLASS_VERSION(Astr, 1)
 
 std::ostream & operator<<(std::ostream & os, const Astr& astr)
 {
