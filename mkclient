@@ -1,3 +1,12 @@
+#!/bin/bash
+
 #g++ -std=c++14 -lpthread -lboost_system t5.cpp -o server
 #g++  -lpthread -lboost_thread -lboost_system t5.cpp -o server5
-g++ -std=c++17 -lpthread  -lboost_system -lboost_serialization /usr/lib/arm-linux-gnueabihf/libboost_system.so /usr/lib/arm-linux-gnueabihf/libboost_thread.so.1.67.0 SimpleClient.cpp -o clientel
+
+if [ $HOSTNAME == "raspberrypi" ]; then
+  g++ -std=c++17 -lpthread  -lboost_system -lboost_serialization /usr/lib/arm-linux-gnueabihf/libboost_system.so /usr/lib/arm-linux-gnueabihf/libboost_thread.so.1.67.0 SimpleClient.cpp -o clientel
+else
+  g++ -c SimpleClient.cpp  -I/usr/include/boost -std=c++17
+  g++ SimpleClient.o -o clientel -L/usr/lib/x86_64-linux-gnu -lboost_serialization -lpthread -lboost_system -std=c++17
+fi
+
