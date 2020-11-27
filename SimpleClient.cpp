@@ -64,12 +64,12 @@ void push_str(olc::net::message<T>& msg, const std::string& s)
   std::cout << "trying to send: [" << s <<  "]" << std::endl;
 
   // PUSH A TEXT STRING OVER USING A CHAR
-  int n = s.length()+1;
+  uint16_t n = s.length()+1;
   char char_array[n];
   strcpy(char_array, s.c_str());
   
   // push string
-  for (int i = n-1; i >= 0; i--)
+  for (auto i = n-1; i >= 0; i--)
     msg << char_array[i];
 
   // push size
@@ -130,7 +130,8 @@ public:
 int main()
 {
 	CustomClient c;
-	c.Connect("192.168.0.167", 60000);
+	//c.Connect("192.168.0.167", 60000);
+	c.Connect("127.0.0.1", 60000);
 
 	bool key[3] = { false, false, false };
 	bool old_key[3] = { false, false, false };

@@ -62,13 +62,13 @@ std::string pop_str(olc::net::message<T>& msg)
 {
 
   // pop size
-  int n;
+  uint16_t n;
   msg >> n;
 
   char char_array[n];
   
   // pop sstring
-  for (int i = 0; i < n; i++){
+  for (auto i = 0; i < n; i++){
     msg >> char_array[i];
   }
 
@@ -135,7 +135,8 @@ protected:
        // covert from stringstream to astr class
        Astr astr;
        //std::stringstream str_strm(ss);
-       chg2astr(astr, ss);
+       fwrite_astr(astr, ss);
+       fread_astr(astr, ss);
        astr.print_str();
 
        //// RECEIVE A CHAR ARRAY
