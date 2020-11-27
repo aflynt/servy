@@ -57,6 +57,30 @@
 #include <iostream>
 #include "olc_net.h"
 
+template<typename T>
+std::string pop_str(olc::net::message<T>& msg)
+{
+
+  // pop size
+  int n;
+  msg >> n;
+
+  char char_array[n];
+  
+  // pop sstring
+  for (int i = 0; i < n; i++){
+    msg >> char_array[i];
+  }
+
+  // put char[] into string 
+  std::string sstr(char_array);
+
+  std::cout << "trying to unpack: [" << sstr <<  "]" << std::endl;
+  return sstr;
+}
+
+
+
 class CustomServer : public olc::net::server_interface<CustomMsgTypes>
 {
 public:
@@ -103,6 +127,16 @@ protected:
 
 		case CustomMsgTypes::SendText:{
 			 std::cout << "[" << client->GetID() << "]: Send Text\n";
+       
+       // new pop str method
+       // get serialized string
+       std::string ss = pop_str(msg);
+
+       // covert from stringstream to astr class
+       Astr astr;
+       //std::stringstream str_strm(ss);
+       chg2astr(astr, ss);
+       astr.print_str();
 
        //// RECEIVE A CHAR ARRAY
        //int n;
@@ -116,48 +150,26 @@ protected:
        //}
        //std::cout << std::endl;
 
-       /* ---------------------------------------------------
-       // TRY TO RECEIVE A STREAMBUF...
-       boost::asio::streambuf b;
 
-       // get the size first
-       size_t n;
-       msg >> n;
-       
-       //reserve 512 bytes in output sequence
-       boost::asio::streambuf::mutable_buffers_type bufs = b.prepare(n);
+       // XXXXXXXXXXXXXXXXXXXXXXXXXXX
+       // XXXXXXXXXXXXXXXXXXXXXXXXXXX
+       // // READ IN THE STRING USING BOOST SERIALIZATION
+       // //std::string filename(boost::archive::tmpdir());
+       // std::string filename("/home/pi");
+       // filename += "/newfile.txt";
+       // Astr astr;
 
-       // received data is committed from output sequence to input sequence
-       b.commit(n);
-
-       // now get the buf data
-       msg >> bufs;
-
-       std::istream is(&b);
-       std::string s;
-       std::string smsg;
-       for( int i = 0; i < n; ++i){
-         is >> s;
-         smsg.append(s);
-       }
-
-       std::cout << "i think i got: " << smsg << std::endl;
-      -----------------------------------------------------*/
-
-       // READ IN THE STRING USING BOOST SERIALIZATION
-       //std::string filename(boost::archive::tmpdir());
-       std::string filename("/home/pi");
-       filename += "/newfile.txt";
-       Astr astr;
-
-       restore_astr(astr, filename.c_str());
-       astr.print_str();
-       
-       // pull in the pushed 1
-       int n;
-       msg >> n;
+       // restore_astr(astr, filename.c_str());
+       // astr.print_str();
+       // 
+       // // pull in the pushed 1
+       // int n;
+       // msg >> n;
+       // XXXXXXXXXXXXXXXXXXXXXXXXXXX
+       // XXXXXXXXXXXXXXXXXXXXXXXXXXX
 
        // reply back
+       /////////////////////////////////////////////
 			 olc::net::message<CustomMsgTypes> new_msg;
 			 new_msg.header.id = CustomMsgTypes::SendText;
 
@@ -166,7 +178,7 @@ protected:
        new_msg << uid;
 
        std::string outstr = "[APPROVED]";
-       n = outstr.length()+1;
+       int n = outstr.length()+1;
        char char_array[n];
        strcpy(char_array, outstr.c_str());
        

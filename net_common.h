@@ -68,6 +68,7 @@
 #include <chrono>
 #include <cstdint>
 #include <fstream>
+#include <sstream>
 
 #ifdef _WIN32
 #define _WIN32_WINNT 0x0A00
@@ -104,7 +105,7 @@ public:
   Astr() { s= "foo";}
   Astr(std::string& instr): s(instr) {}
   Astr(const std::string& instr): s(instr) {}
-  void print_str()
+  void print_str() const
   {
     std::cout << s << std::endl;
   }
@@ -137,6 +138,29 @@ void restore_astr(Astr& astr, const char* filename)
   boost::archive::text_iarchive ia(ifs);
 
   ia >> astr;
+}
+
+//void chg2astr(Astr& astr, std::stringstream& ss)
+void chg2astr(Astr& astr, std::string& ss)
+{
+  // write string to file
+  std::ofstream ofs("foobar.txt", std::ofstream::out);
+  ofs << ss;
+  ofs.close();
+
+  // read back in
+  std::ifstream ifs("foobar.txt", std::ifstream::in);
+  boost::archive::text_iarchive ia(ifs);
+
+  ia >> astr;
+}
+
+std::string get_serial_str(const Astr& astr)
+{
+  std::stringstream ss;
+  boost::archive::text_oarchive oa(ss);
+  oa << astr;
+  return ss.str();
 }
 
 

@@ -58,6 +58,23 @@
 #include <iostream>
 #include "olc_net.h"
 
+template<typename T>
+void push_str(olc::net::message<T>& msg, const std::string& s)
+{
+  std::cout << "trying to send: [" << s <<  "]" << std::endl;
+
+  // PUSH A TEXT STRING OVER USING A CHAR
+  int n = s.length()+1;
+  char char_array[n];
+  strcpy(char_array, s.c_str());
+  
+  // push string
+  for (int i = n-1; i >= 0; i--)
+    msg << char_array[i];
+
+  // push size
+  msg << n;
+}
 
 class CustomClient : public olc::net::client_interface<CustomMsgTypes>
 {
@@ -93,37 +110,19 @@ public:
     std::string filename("/home/pi");
     filename += "/newfile.txt";
 
+    // make class holding string
     Astr astr(s);
+
     // dump string to file
     save_astr(astr, filename.c_str());
 
-    msg << 1;
-    
+    // convert from string to serialized string
+    std::string ss = get_serial_str(astr);
 
-    //// PUSH A TEXT STRING OVER USING A CHAR
-    //int n = s.length()+1;
-    //char char_array[n];
-    //strcpy(char_array, s.c_str());
-    //
-    //for (int i = n-1; i >= 0; i--)
-    //  msg << char_array[i];
-
-    //msg << n;
-
-    /* -------
-    // TRY USING A STREAMBUF
-    boost::asio::streambuf b;
-    std::ostream os(&b);
-    os << "foobar testing streambuf\n";
-    
-    // push into message here??
-    msg << b.data();
-    // push size onto message too
-    size_t n = b.size();
-    msg << n;
-    b.consume(n); // remove from input sequence...
-       ------ */
+    // push serial string
+    push_str(msg, ss);
       
+    // send it
 		Send(msg);
   }
 };
