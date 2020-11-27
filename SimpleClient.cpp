@@ -107,14 +107,14 @@ public:
     // USE BOOST SERIALIZATION
     // setup archive file to serialize to
     //std::string filename(boost::archive::tmpdir());
-    std::string filename("/home/pi");
-    filename += "/newfile.txt";
+    //std::string filename("/home/pi");
+    //filename += "/newfile.txt";
 
     // make class holding string
     Astr astr(s);
 
     // dump string to file
-    save_astr(astr, filename.c_str());
+    //save_astr(astr, filename.c_str());
 
     // convert from string to serialized string
     std::string ss = get_serial_str(astr);
@@ -130,7 +130,7 @@ public:
 int main()
 {
 	CustomClient c;
-	c.Connect("127.0.0.1", 60000);
+	c.Connect("192.168.0.167", 60000);
 
 	bool key[3] = { false, false, false };
 	bool old_key[3] = { false, false, false };
