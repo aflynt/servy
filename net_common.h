@@ -142,7 +142,7 @@ void restore_astr(Astr& astr, const char* filename)
 }
 
 //void chg2astr(Astr& astr, std::stringstream& ss)
-void fwrite_astr(const Astr& astr, const std::string& ss)
+void fwrite_astr(const std::string& ss)
 {
   // write string to file
   std::ofstream ofs("foobar.txt", std::ofstream::out);
@@ -150,7 +150,7 @@ void fwrite_astr(const Astr& astr, const std::string& ss)
   ofs.close();
 }
 
-void fread_astr(Astr& astr, const std::string& ss)
+void fread_astr(Astr& astr)
 {
   // read back in
   std::ifstream ifs("foobar.txt", std::ifstream::in);

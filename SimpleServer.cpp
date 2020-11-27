@@ -132,11 +132,17 @@ protected:
        // get serialized string
        std::string ss = pop_str(msg);
 
+       // replace archive 17 with archive 16
+       std::string str2 ("archive 17");
+       std::size_t found = ss.find(str2);
+       if (found !=std::string::npos)
+         ss.replace(ss.find(str2),str2.length(),"archive 16");
+
        // covert from stringstream to astr class
        Astr astr;
        //std::stringstream str_strm(ss);
-       fwrite_astr(astr, ss);
-       fread_astr(astr, ss);
+       fwrite_astr(ss);
+       fread_astr(astr);
        astr.print_str();
 
        //// RECEIVE A CHAR ARRAY
