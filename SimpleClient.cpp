@@ -131,7 +131,8 @@ int main()
 {
 	CustomClient c;
 	//c.Connect("192.168.0.167", 60000);
-	c.Connect("127.0.0.1", 60000);
+	//c.Connect("127.0.0.1", 60000);
+	c.Connect("10.4.228.10", 60000);
 
 	bool key[3] = { false, false, false };
 	bool old_key[3] = { false, false, false };

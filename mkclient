@@ -5,8 +5,11 @@
 
 if [ $HOSTNAME == "raspberrypi" ]; then
   g++ -std=c++17 -lpthread  -lboost_system -lboost_serialization /usr/lib/arm-linux-gnueabihf/libboost_system.so /usr/lib/arm-linux-gnueabihf/libboost_thread.so.1.67.0 SimpleClient.cpp -o clientel
-else
+elif [ $HOSTNAME == "x220" ]  ; then
   g++ -c SimpleClient.cpp  -I/usr/include/boost -std=c++17
   g++ SimpleClient.o -o clientel -L/usr/lib/x86_64-linux-gnu -lboost_serialization -lpthread -lboost_system -std=c++17
+else
+  g++ -c SimpleClient.cpp  -I/usr/include/boost -std=c++17
+  g++ SimpleClient.o -o clientel -lboost_serialization -lpthread -lboost_system
 fi
 
