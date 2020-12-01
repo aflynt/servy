@@ -58,6 +58,15 @@
 #include <iostream>
 #include "olc_net.h"
 
+std::string safe_getenv(const char * var){
+  std::string rstr{"BAD"};
+  if (const char* env_p = std::getenv(var)){
+      std::string estr(env_p);
+      rstr = estr;
+  }
+  return rstr;
+}
+
 template<typename T>
 void push_str(olc::net::message<T>& msg, const std::string& s)
 {
@@ -79,6 +88,24 @@ void push_str(olc::net::message<T>& msg, const std::string& s)
 class CustomClient : public olc::net::client_interface<CustomMsgTypes>
 {
 public:
+  CustomClient(const std::string& ip, const int port): m_ip(ip) {
+	  Connect(ip, port);
+    std::string user{safe_getenv("USER")};
+    std::string dir {safe_getenv("PWD")};
+    std::string podkey {safe_getenv("PODKEY")};
+    m_user = user;
+    m_dir = dir;
+    m_podkey = podkey;
+  }
+
+  void print_state()
+  {
+    std::cout << "IP:     " <<     m_ip << std::endl;
+    std::cout << "USER:   " <<   m_user << std::endl;
+    std::cout << "DIR:    " <<    m_dir << std::endl;
+    std::cout << "PODKEY: " << m_podkey << std::endl;
+  }
+
 	void PingServer()	
 	{
 		olc::net::message<CustomMsgTypes> msg;
@@ -125,33 +152,19 @@ public:
     // send it
 		Send(msg);
   }
+private:
+  std::string m_ip;
+  std::string m_user;
+  std::string m_dir ;
+  std::string m_podkey;
 };
 
 int main()
 {
-	CustomClient c;
 
-  std::string ip {"10.4.228.10"};
-  if (const char* env_p = std::getenv("BOOST_IP")){
-      std::string estr(env_p);
-      ip = estr;
-  }
-
-  std::string user {"thor"};
-  if (const char* env_p = std::getenv("USER")){
-      std::string estr(env_p);
-      user = estr;
-  }
-
-  std::string dir {"/tmp"};
-  if (const char* env_p = std::getenv("PWD")){
-      std::string estr(env_p);
-      dir = estr;
-  }
-
-  std::cout << "Greetings " <<  user << ". Connecting to IP:" << ip << std::endl;
-  std::cout << "dir: " << dir << std::endl;
-	c.Connect(ip, 60000);
+  std::string ip{safe_getenv("BOOST_IP")};
+	CustomClient c(ip, 60000);
+  c.print_state();
 
 	bool key[3] = { false, false, false };
 	bool old_key[3] = { false, false, false };
