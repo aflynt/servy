@@ -130,64 +130,35 @@ public:
 int main()
 {
 	CustomClient c;
-	//c.Connect("192.168.0.167", 60000);
-	//c.Connect("127.0.0.1", 60000);
-	c.Connect("10.4.228.10", 60000);
+
+  std::string ip {"10.4.228.10"};
+  if (const char* env_p = std::getenv("BOOST_IP")){
+      std::string estr(env_p);
+      ip = estr;
+  }
+  std::cout << "Connecting to IP:" << ip << std::endl;
+	c.Connect(ip, 60000);
 
 	bool key[3] = { false, false, false };
 	bool old_key[3] = { false, false, false };
   int usrpick;
 
   std::string mstring = "run x with 128 cores";
-//  DEV ZONE
-//
-//  {
-//    std::ofstream ofs("foo.txt");
-//
-//    std::string ss("hello world");
-//    Astr astr(ss);
-//    astr.print_str();
-//
-//    // save to archive
-//    boost::archive::text_oarchive oa(ofs);
-//
-//    oa << astr;
-//  }
-//
-//  {
-//    //newscope
-//    std::ifstream ifs("foo.txt");
-//
-//    Astr bstr;
-//    boost::archive::text_iarchive ia(ifs);
-//    ia >> bstr;
-//    bstr.print_str();
-//  
-//  }
-//  DEV ZONE
 
 	bool bQuit = false;
 	//bool bQuit = true;
 	while (!bQuit)
 	{
-		//if (GetForegroundWindow() == GetConsoleWindow())
     if(1)
 		{
       std::cin >> usrpick;
-			//key[0] = GetAsyncKeyState('1') & 0x8000;
-			//key[1] = GetAsyncKeyState('2') & 0x8000;
-			//key[2] = GetAsyncKeyState('3') & 0x8000;
 		}
 
-		//if (key[0] && !old_key[0]) c.PingServer();
-		//if (key[1] && !old_key[1]) c.MessageAll();
-		//if (key[2] && !old_key[2]) bQuit = true;
 		if (usrpick == 0) c.SendText(mstring);
 		if (usrpick == 1) c.PingServer();
 		if (usrpick == 2) c.MessageAll();
 		if (usrpick == 3) bQuit = true;
 
-		//for (int i = 0; i < 3; i++) old_key[i] = key[i];
 
 		if (c.IsConnected()) // c is connected
 		{
@@ -220,8 +191,6 @@ int main()
 
 				case CustomMsgTypes::SendText:{
 					// Server has responded to a string message
-          //
-          //
 
           // pop string length
           int n;

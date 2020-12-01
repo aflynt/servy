@@ -67,14 +67,15 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
 
 #ifdef _WIN32
 #define _WIN32_WINNT 0x0A00
+#define ASIO_STANDALONE
 #endif
 
-#define ASIO_STANDALONE
 #include <boost/asio.hpp>
 #include <boost/asio/ts/buffer.hpp>
 #include <boost/asio/ts/internet.hpp>
