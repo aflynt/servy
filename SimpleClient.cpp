@@ -136,7 +136,21 @@ int main()
       std::string estr(env_p);
       ip = estr;
   }
-  std::cout << "Connecting to IP:" << ip << std::endl;
+
+  std::string user {"thor"};
+  if (const char* env_p = std::getenv("USER")){
+      std::string estr(env_p);
+      user = estr;
+  }
+
+  std::string dir {"/tmp"};
+  if (const char* env_p = std::getenv("PWD")){
+      std::string estr(env_p);
+      dir = estr;
+  }
+
+  std::cout << "Greetings " <<  user << ". Connecting to IP:" << ip << std::endl;
+  std::cout << "dir: " << dir << std::endl;
 	c.Connect(ip, 60000);
 
 	bool key[3] = { false, false, false };
