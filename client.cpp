@@ -56,7 +56,18 @@
 
 #include <fstream>
 #include <iostream>
+#include <cstring>
+#include <cstdlib>
 #include "olc_net.h"
+#include <algorithm>
+#include <cctype>
+
+//trim from end (in place)
+static inline void rtrim(std::string &s) {
+  s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+        }).base(), s.end());
+}
 
 std::string safe_getenv(const char * var){
   std::string rstr{"BAD"};
@@ -159,8 +170,24 @@ private:
   std::string m_podkey;
 };
 
-int main()
+int main(int argc, char ** argv)
 {
+  std::string callstr;
+  if (argc > 1 ) {
+    if (strcmp("-r",argv[1]) == 0){
+      std::cout << "calling the following args" << std::endl;
+      for (int i = 2; i < argc; i++)
+      {
+        std::string tmpstr{argv[i]};
+        std::cout << i << " " << tmpstr << std::endl;
+        callstr += tmpstr + " ";
+      }
+      callstr += "> result.dat";
+      rtrim(callstr);
+      std::cout << "SET TO CALL: " << callstr << std::endl;
+      std::system(callstr.c_str());
+    }
+  }
 
   std::string ip{safe_getenv("BOOST_IP")};
 	CustomClient c(ip, 60000);
