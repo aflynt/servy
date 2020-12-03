@@ -63,4 +63,7 @@
 #include "net_client.h"
 #include "net_server.h"
 #include "net_connection.h"
+#include "machine.h"
+#include "util.h"
+#include "run.h"
 #endif

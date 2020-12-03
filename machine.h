@@ -1,7 +1,6 @@
-#include <iostream>
-
 #ifndef _MACHINE
 #define _MACHINE
+#include <iostream>
 
 using namespace std;
 class machine{

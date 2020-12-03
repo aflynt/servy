@@ -1,10 +1,10 @@
+#ifndef _UTIL
+#define _UTIL
+
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include "machine.h"
-
-#ifndef _UTIL
-#define _UTIL
 
 using namespace std;
 

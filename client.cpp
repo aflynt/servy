@@ -54,31 +54,8 @@
 
 */
 
-#include <fstream>
-#include <iostream>
-#include <cstring>
-#include <cstdlib>
 #include "olc_net.h"
-#include <algorithm>
-#include <cctype>
-#include "machine.h"
-#include "util.h"
 
-//trim from end (in place)
-static inline void rtrim(std::string &s) {
-  s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-        return !std::isspace(ch);
-        }).base(), s.end());
-}
-
-std::string safe_getenv(const char * var){
-  std::string rstr{"BAD"};
-  if (const char* env_p = std::getenv(var)){
-      std::string estr(env_p);
-      rstr = estr;
-  }
-  return rstr;
-}
 
 template<typename T>
 void push_str(olc::net::message<T>& msg, const std::string& s)
@@ -211,8 +188,9 @@ int main(int argc, char ** argv)
     m.print();
   }
 
+  run r1{101,"test_run.sim", ivm};
 
-
+  r1.print();
 
   std::string mstring = "run x with 128 cores";
 

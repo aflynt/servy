@@ -70,6 +70,9 @@
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
+#include <cstring>
+#include <algorithm>
+#include <cctype>
 
 #ifdef _WIN32
 #define _WIN32_WINNT 0x0A00
@@ -168,5 +171,20 @@ std::string get_serial_str(const Astr& astr)
   return ss.str();
 }
 
+//trim from end (in place)
+static inline void rtrim(std::string &s) {
+  s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+        }).base(), s.end());
+}
+
+std::string safe_getenv(const char * var){
+  std::string rstr{"BAD"};
+  if (const char* env_p = std::getenv(var)){
+      std::string estr(env_p);
+      rstr = estr;
+  }
+  return rstr;
+}
 
 #endif
