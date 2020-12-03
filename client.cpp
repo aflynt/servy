@@ -105,9 +105,11 @@ public:
     std::string user{safe_getenv("USER")};
     std::string dir {safe_getenv("PWD")};
     std::string podkey {safe_getenv("PODKEY")};
+    std::string powerlist {safe_getenv("POWERLIST")};
     m_user = user;
     m_dir = dir;
     m_podkey = podkey;
+    m_powerlist = powerlist;
   }
 
   void print_state()
@@ -116,6 +118,7 @@ public:
     std::cout << "USER:   " <<   m_user << std::endl;
     std::cout << "DIR:    " <<    m_dir << std::endl;
     std::cout << "PODKEY: " << m_podkey << std::endl;
+    std::cout << "PWRLIST:" << m_powerlist << std::endl;
   }
 
 	void PingServer()	
@@ -169,6 +172,7 @@ private:
   std::string m_user;
   std::string m_dir ;
   std::string m_podkey;
+  std::string m_powerlist;
 };
 
 int main(int argc, char ** argv)
