@@ -62,6 +62,7 @@
 #include <algorithm>
 #include <cctype>
 #include "machine.h"
+#include "util.h"
 
 //trim from end (in place)
 static inline void rtrim(std::string &s) {
@@ -198,7 +199,19 @@ int main(int argc, char ** argv)
 	CustomClient c(ip, 60000);
   c.print_state();
 
-  int usrpick;
+  // STRING OF MACHINES TEST
+  std::string mstr{"thor:2,c34:64,c22:64,c23:48"};
+
+  //auto vs = split(mstr, ','); // split on , to get machine strings
+
+  auto ivm = get_machines(mstr);
+
+  std::cout << "\033[1;32mINPUT MACHINES:\033[0m" << std::endl;
+  for(auto&m : ivm){
+    m.print();
+  }
+
+
 
 
   std::string mstring = "run x with 128 cores";
@@ -222,6 +235,7 @@ int main(int argc, char ** argv)
   }
 
 
+  int usrpick;
 	bool bQuit = false;
 	while (!bQuit)
 	{

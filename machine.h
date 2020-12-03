@@ -1,5 +1,8 @@
 #include <iostream>
 
+#ifndef _MACHINE
+#define _MACHINE
+
 using namespace std;
 class machine{
 
@@ -53,3 +56,5 @@ private:
   int m_res;
   int m_free;
 };
+
+#endif
