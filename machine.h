@@ -1,6 +1,7 @@
 #ifndef _MACHINE
 #define _MACHINE
-#include <iostream>
+#include "net_common.h"
+//#include <iostream>
 
 using namespace std;
 class machine{
@@ -56,4 +57,30 @@ private:
   int m_free;
 };
 
+// split "thor:60" with delim : into str and int
+//vector<machine> get_machines( vector<string>& vs) {
+std::vector<machine> get_machines( const std::string& mstring) {
+    
+    // first split on ','
+    auto vs = split(mstring, ','); // now have split machines vector of strings
+
+    std::vector<machine> result;
+
+    // split each string into str,int pairs
+    for (auto& s : vs){
+      for (char& ch : s) //replace each punct char with space
+        switch(ch) {
+          case ':':
+            ch = ' ';
+        }
+
+      std::stringstream ss (s); // make istream ss reading from string s
+      std::string name;
+      int numcores;
+      ss >> name;
+      ss >> numcores;
+      result.push_back(machine{name,numcores});
+    }
+    return result;
+}
 #endif
