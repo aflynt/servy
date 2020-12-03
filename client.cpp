@@ -61,6 +61,7 @@
 #include "olc_net.h"
 #include <algorithm>
 #include <cctype>
+#include "machine.h"
 
 //trim from end (in place)
 static inline void rtrim(std::string &s) {
@@ -193,14 +194,31 @@ int main(int argc, char ** argv)
 	CustomClient c(ip, 60000);
   c.print_state();
 
-	bool key[3] = { false, false, false };
-	bool old_key[3] = { false, false, false };
   int usrpick;
+
 
   std::string mstring = "run x with 128 cores";
 
+  vector<machine> vm;
+  vm.push_back(machine{"c31", 10});
+  vm.push_back(machine{"c32", 20});
+  vm.push_back(machine{"c33", 30});
+  vm.push_back(machine{"c34", 40});
+
+  std::cout << "\033[1;34mThis should be blue\033[0m" << std::endl;
+  for (auto& m : vm){
+    std::cout << "BL        -> ";
+    m.print();
+    std::cout << "adding 20 -> ";
+    m.alloc(20);
+    m.print();
+    std::cout << "rm     30 -> ";
+    m.free(30);
+    m.print();
+  }
+
+
 	bool bQuit = false;
-	//bool bQuit = true;
 	while (!bQuit)
 	{
     if(1)
