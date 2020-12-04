@@ -30,18 +30,7 @@ public:
   }
 
   void print(){
-    string mstr = "";
-    int first = true;
-    for (auto&m : machines) {
-      string mname = m.get_name();
-      string ssize = std::to_string(m.get_size());
-      if (first){
-        mstr += mname + ":" + ssize;
-        first = false;
-      }
-      else
-        mstr += "," + mname + ":" + ssize;
-    }
+    string mstr = get_machine_str(machines);
     std::cout << "run( " << m_id << ", "
                          << m_simname << ", " 
                          << mstr << " )"

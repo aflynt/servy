@@ -83,4 +83,20 @@ std::vector<machine> get_machines( const std::string& mstring) {
     }
     return result;
 }
+
+std::string get_machine_str (const std::vector<machine>& machines){
+    string mstr = "";
+    bool first = true;
+    for (auto&m : machines) {
+      string mname = m.get_name();
+      string ssize = std::to_string(m.get_size());
+      if (first){
+        mstr += mname + ":" + ssize;
+        first = false;
+      }
+      else
+        mstr += "," + mname + ":" + ssize;
+    }
+    return mstr;
+}
 #endif
