@@ -118,6 +118,21 @@ public:
 		Send(msg);
 	}
 
+  void SendMachine(const machine& amachine)
+  {
+    // generate a message thing
+		olc::net::message<CustomMsgTypes> msg;
+		msg.header.id = CustomMsgTypes::SendMachine;		
+    //
+    // serialize machine 
+    std::string ss = get_serial_machine(amachine);
+
+    // push serial string
+    push_str(msg, ss);
+      
+    // send it
+		Send(msg);
+  }
   void SendText(const std::string& s)
   {
     // generate a message thing
@@ -155,13 +170,15 @@ private:
 
 int main(int argc, char ** argv)
 {
+  bool sendrun = false;
+  int id;
+  std::string simfile;
+  std::string machstr;
   std::string callstr;
   if (argc > 1 ) {
     if (strcmp("-r",argv[1]) == 0 ||
         strcmp("-run",argv[1]) == 0 ){
-      int id;
-      std::string simfile;
-      std::string machstr;
+      sendrun = true;
       std::cout << "calling the following args" << std::endl;
       for (int i = 2; i < argc; i++)
       {
@@ -180,34 +197,14 @@ int main(int argc, char ** argv)
           std::string tmpstr{argv[++i]};
           id = std::stoi(tmpstr);
         }
-
-        //std::cout << i << " " << tmpstr << std::endl;
-        //callstr += tmpstr + " ";
       }
-
-      // create a run
-      // STRING OF MACHINES TEST
-      //std::string mstr{"thor:2,c34:64,c22:64,c23:48"};
-
-      auto ivm = get_machines(machstr);
-
-      std::cout << "\033[1;32mINPUT MACHINES:\033[0m" << std::endl;
-      for(auto&m : ivm){
-        m.print();
-      }
-
-      //run r1{101,"test_run.sim", ivm};
-      run r1{id,simfile, ivm};
-
-      r1.print();
-
-
       //callstr += "> result.dat";
       //rtrim(callstr);
       //std::cout << "SET TO CALL: " << callstr << std::endl;
       //std::system(callstr.c_str());
     }
   }
+
 
   std::string ip{safe_getenv("BOOST_IP")};
 	CustomClient c(ip, 60000);
@@ -216,21 +213,21 @@ int main(int argc, char ** argv)
 
   std::string mstring = "run x with 128 cores";
 
-  std::cout << "\033[1;35m [35] LIGHT BLUE \033[0m" << std::endl;
-  std::cout << "\033[1;44m [44] BG blue , FG white \033[0m" << std::endl;
-  std::cout << "\033[1;41m [41] BG red  , FG white \033[0m" << std::endl;
-  std::cout << "\033[1;37m [37] BG blk  , FG bold white \033[0m" << std::endl;
-  std::cout << "\033[1;01m [01] white bold \033[0m" << std::endl;
-  std::cout << "\033[1;02m [02] grey font \033[0m" << std::endl;
-  std::cout << "\033[1;03m [03] blk font white bg \033[0m" << std::endl;
-  std::cout << "\033[1;04m [04] white font underlined \033[0m" << std::endl;
-  std::cout << "\033[1;05m [05] white font blinking \033[0m" << std::endl;
-  std::cout << "\033[1;06m [06] white font strike thru \033[0m" << std::endl;
-  std::cout << "\033[1;07m [07] \033[0m" << std::endl;
-  std::cout << "\033[1;30m [30] dark grey font \033[0m" << std::endl;
-  std::cout << "\033[1;31m [31] red font \033[0m" << std::endl;
-  std::cout << "\033[1;33m [33] yellow font \033[0m" << std::endl;
-  std::cout << "\033[1;34m [34] purple font \033[0m" << std::endl;
+  //std::cout << "\033[1;35m [35] LIGHT BLUE \033[0m" << std::endl;
+  //std::cout << "\033[1;44m [44] BG blue , FG white \033[0m" << std::endl;
+  //std::cout << "\033[1;41m [41] BG red  , FG white \033[0m" << std::endl;
+  //std::cout << "\033[1;37m [37] BG blk  , FG bold white \033[0m" << std::endl;
+  //std::cout << "\033[1;01m [01] white bold \033[0m" << std::endl;
+  //std::cout << "\033[1;02m [02] grey font \033[0m" << std::endl;
+  //std::cout << "\033[1;03m [03] blk font white bg \033[0m" << std::endl;
+  //std::cout << "\033[1;04m [04] white font underlined \033[0m" << std::endl;
+  //std::cout << "\033[1;05m [05] white font blinking \033[0m" << std::endl;
+  //std::cout << "\033[1;06m [06] white font strike thru \033[0m" << std::endl;
+  //std::cout << "\033[1;07m [07] \033[0m" << std::endl;
+  //std::cout << "\033[1;30m [30] dark grey font \033[0m" << std::endl;
+  //std::cout << "\033[1;31m [31] red font \033[0m" << std::endl;
+  //std::cout << "\033[1;33m [33] yellow font \033[0m" << std::endl;
+  //std::cout << "\033[1;34m [34] purple font \033[0m" << std::endl;
 
   int usrpick;
 	bool bQuit = false;
@@ -241,6 +238,19 @@ int main(int argc, char ** argv)
       std::cin >> usrpick;
 		}
 
+		if (sendrun) 
+    {
+      auto ivm = get_machines(machstr);
+
+      std::cout << "\033[1;32mINPUT MACHINES:\033[0m" << std::endl;
+      for(auto&m : ivm){
+        m.print();
+        c.SendMachine(m);
+      }
+      //run r1{id,simfile, ivm};
+      //     r1.print();
+      sendrun = false;
+    }
 		if (usrpick == 0) c.SendText(mstring);
 		if (usrpick == 1) c.PingServer();
 		if (usrpick == 2) c.MessageAll();

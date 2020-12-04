@@ -101,6 +101,7 @@ enum class CustomMsgTypes : uint32_t
 	MessageAll,
 	ServerMessage,
   SendText,
+  SendMachine
 };
 
 
@@ -146,12 +147,32 @@ void restore_astr(Astr& astr, const char* filename)
 }
 
 //void chg2astr(Astr& astr, std::stringstream& ss)
+//
+//
+void fwrite_serial(const std::string& ss)
+{
+  // write string to file
+  std::ofstream ofs("foobar.txt", std::ofstream::out);
+  ofs << ss;
+  ofs.close();
+}
+//
 void fwrite_astr(const std::string& ss)
 {
   // write string to file
   std::ofstream ofs("foobar.txt", std::ofstream::out);
   ofs << ss;
   ofs.close();
+}
+
+template <typename T>
+void fread_T(T& astr)
+{
+  // read back in
+  std::ifstream ifs("foobar.txt", std::ifstream::in);
+  boost::archive::text_iarchive ia(ifs);
+
+  ia >> astr;
 }
 
 void fread_astr(Astr& astr)

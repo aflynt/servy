@@ -125,6 +125,26 @@ protected:
 			MessageAllClients(new_msg, client);
 		  } break;
 
+    case CustomMsgTypes::SendMachine:{
+			 std::cout << "[" << client->GetID() << "]: Send Machine\n";
+       //
+       // get serialized string
+       std::string ss = pop_str(msg);
+       //
+       // replace archive 17 with archive 16
+       std::string str2 ("archive 17");
+       std::size_t found = ss.find(str2);
+       if (found !=std::string::npos)
+         ss.replace(ss.find(str2),str2.length(),"archive 16");
+       //
+       // covert from stringstream to machine class
+       machine amachine;
+       fwrite_serial(ss); // write the serialized string
+       fread_T(amachine);
+       amachine.print();
+       
+      }break;
+
 		case CustomMsgTypes::SendText:{
 			 std::cout << "[" << client->GetID() << "]: Send Text\n";
        

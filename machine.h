@@ -7,6 +7,7 @@ using namespace std;
 class machine{
 
 public:
+  machine(){};
   machine(const string& name, const int size):
     m_name(name),
     m_size(size),
@@ -49,6 +50,17 @@ public:
     }
     return m_free;
   }
+
+  template<class Archive>
+    void serialize(Archive& ar, const unsigned int version)
+    {
+      ar & m_name;
+      ar & m_size;
+      ar & m_res;
+      ar & m_free;
+    }
+  friend class boost::serialization::access;
+  //friend std::ostream& operator<<(std::ostream& os, const machine& m);
   
 private:
   string m_name;
@@ -56,6 +68,17 @@ private:
   int m_res;
   int m_free;
 };
+//std::ostream& operator<<(std::ostream& os, const machine& m)
+//{
+//  return os << m;
+//}
+std::string get_serial_machine(const machine& m)
+{
+  std::stringstream ss;
+  boost::archive::text_oarchive oa(ss);
+  oa << m;
+  return ss.str();
+}
 
 // split "thor:60" with delim : into str and int
 //vector<machine> get_machines( vector<string>& vs) {
