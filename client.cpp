@@ -157,18 +157,55 @@ int main(int argc, char ** argv)
 {
   std::string callstr;
   if (argc > 1 ) {
-    if (strcmp("-r",argv[1]) == 0){
+    if (strcmp("-r",argv[1]) == 0 ||
+        strcmp("-run",argv[1]) == 0 ){
+      int id;
+      std::string simfile;
+      std::string machstr;
       std::cout << "calling the following args" << std::endl;
       for (int i = 2; i < argc; i++)
       {
-        std::string tmpstr{argv[i]};
-        std::cout << i << " " << tmpstr << std::endl;
-        callstr += tmpstr + " ";
+        if (strcmp("-f",argv[i]) == 0) { // file argument
+          std::string tmpstr{argv[++i]};
+          simfile = tmpstr;
+        }
+
+        if (strcmp("-m",argv[i]) == 0 || // machines
+            strcmp("-on",argv[i]) == 0) {
+          std::string tmpstr{argv[++i]};
+          machstr = tmpstr;
+        }
+        if (strcmp("-i",argv[i]) == 0 || // id
+            strcmp("-id",argv[i]) == 0) {
+          std::string tmpstr{argv[++i]};
+          id = std::stoi(tmpstr);
+        }
+
+        //std::cout << i << " " << tmpstr << std::endl;
+        //callstr += tmpstr + " ";
       }
-      callstr += "> result.dat";
-      rtrim(callstr);
-      std::cout << "SET TO CALL: " << callstr << std::endl;
-      std::system(callstr.c_str());
+
+      // create a run
+      // STRING OF MACHINES TEST
+      //std::string mstr{"thor:2,c34:64,c22:64,c23:48"};
+
+      auto ivm = get_machines(machstr);
+
+      std::cout << "\033[1;32mINPUT MACHINES:\033[0m" << std::endl;
+      for(auto&m : ivm){
+        m.print();
+      }
+
+      //run r1{101,"test_run.sim", ivm};
+      run r1{id,simfile, ivm};
+
+      r1.print();
+
+
+      //callstr += "> result.dat";
+      //rtrim(callstr);
+      //std::cout << "SET TO CALL: " << callstr << std::endl;
+      //std::system(callstr.c_str());
     }
   }
 
@@ -176,42 +213,24 @@ int main(int argc, char ** argv)
 	CustomClient c(ip, 60000);
   c.print_state();
 
-  // STRING OF MACHINES TEST
-  std::string mstr{"thor:2,c34:64,c22:64,c23:48"};
-
-  //auto vs = split(mstr, ','); // split on , to get machine strings
-
-  auto ivm = get_machines(mstr);
-
-  std::cout << "\033[1;32mINPUT MACHINES:\033[0m" << std::endl;
-  for(auto&m : ivm){
-    m.print();
-  }
-
-  run r1{101,"test_run.sim", ivm};
-
-  r1.print();
 
   std::string mstring = "run x with 128 cores";
 
-  vector<machine> vm;
-  vm.push_back(machine{"c31", 10});
-  vm.push_back(machine{"c32", 20});
-  vm.push_back(machine{"c33", 30});
-  vm.push_back(machine{"c34", 40});
-
-  std::cout << "\033[1;34mThis should be blue\033[0m" << std::endl;
-  for (auto& m : vm){
-    std::cout << "BL        -> ";
-    m.print();
-    std::cout << "adding 20 -> ";
-    m.alloc(20);
-    m.print();
-    std::cout << "rm     30 -> ";
-    m.free(30);
-    m.print();
-  }
-
+  std::cout << "\033[1;35m [35] LIGHT BLUE \033[0m" << std::endl;
+  std::cout << "\033[1;44m [44] BG blue , FG white \033[0m" << std::endl;
+  std::cout << "\033[1;41m [41] BG red  , FG white \033[0m" << std::endl;
+  std::cout << "\033[1;37m [37] BG blk  , FG bold white \033[0m" << std::endl;
+  std::cout << "\033[1;01m [01] white bold \033[0m" << std::endl;
+  std::cout << "\033[1;02m [02] grey font \033[0m" << std::endl;
+  std::cout << "\033[1;03m [03] blk font white bg \033[0m" << std::endl;
+  std::cout << "\033[1;04m [04] white font underlined \033[0m" << std::endl;
+  std::cout << "\033[1;05m [05] white font blinking \033[0m" << std::endl;
+  std::cout << "\033[1;06m [06] white font strike thru \033[0m" << std::endl;
+  std::cout << "\033[1;07m [07] \033[0m" << std::endl;
+  std::cout << "\033[1;30m [30] dark grey font \033[0m" << std::endl;
+  std::cout << "\033[1;31m [31] red font \033[0m" << std::endl;
+  std::cout << "\033[1;33m [33] yellow font \033[0m" << std::endl;
+  std::cout << "\033[1;34m [34] purple font \033[0m" << std::endl;
 
   int usrpick;
 	bool bQuit = false;
