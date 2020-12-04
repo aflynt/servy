@@ -53,9 +53,24 @@
 	David Barr, aka javidx9, ©OneLoneCoder 2019, 2020
 
 */
-
+/*
+  //std::cout << "\033[1;35m [35] LIGHT BLUE \033[0m" << std::endl;
+  //std::cout << "\033[1;44m [44] BG blue , FG white \033[0m" << std::endl;
+  //std::cout << "\033[1;41m [41] BG red  , FG white \033[0m" << std::endl;
+  //std::cout << "\033[1;37m [37] BG blk  , FG bold white \033[0m" << std::endl;
+  //std::cout << "\033[1;01m [01] white bold \033[0m" << std::endl;
+  //std::cout << "\033[1;02m [02] grey font \033[0m" << std::endl;
+  //std::cout << "\033[1;03m [03] blk font white bg \033[0m" << std::endl;
+  //std::cout << "\033[1;04m [04] white font underlined \033[0m" << std::endl;
+  //std::cout << "\033[1;05m [05] white font blinking \033[0m" << std::endl;
+  //std::cout << "\033[1;06m [06] white font strike thru \033[0m" << std::endl;
+  //std::cout << "\033[1;07m [07] \033[0m" << std::endl;
+  //std::cout << "\033[1;30m [30] dark grey font \033[0m" << std::endl;
+  //std::cout << "\033[1;31m [31] red font \033[0m" << std::endl;
+  //std::cout << "\033[1;33m [33] yellow font \033[0m" << std::endl;
+  //std::cout << "\033[1;34m [34] purple font \033[0m" << std::endl;
+*/
 #include "olc_net.h"
-
 
 template<typename T>
 void push_str(olc::net::message<T>& msg, const std::string& s)
@@ -125,7 +140,8 @@ public:
 		msg.header.id = CustomMsgTypes::SendMachine;		
     //
     // serialize machine 
-    std::string ss = get_serial_machine(amachine);
+    //std::string ss = get_serial_machine(amachine);
+    std::string ss = get_serial_str(amachine);
 
     // push serial string
     push_str(msg, ss);
@@ -213,21 +229,6 @@ int main(int argc, char ** argv)
 
   std::string mstring = "run x with 128 cores";
 
-  //std::cout << "\033[1;35m [35] LIGHT BLUE \033[0m" << std::endl;
-  //std::cout << "\033[1;44m [44] BG blue , FG white \033[0m" << std::endl;
-  //std::cout << "\033[1;41m [41] BG red  , FG white \033[0m" << std::endl;
-  //std::cout << "\033[1;37m [37] BG blk  , FG bold white \033[0m" << std::endl;
-  //std::cout << "\033[1;01m [01] white bold \033[0m" << std::endl;
-  //std::cout << "\033[1;02m [02] grey font \033[0m" << std::endl;
-  //std::cout << "\033[1;03m [03] blk font white bg \033[0m" << std::endl;
-  //std::cout << "\033[1;04m [04] white font underlined \033[0m" << std::endl;
-  //std::cout << "\033[1;05m [05] white font blinking \033[0m" << std::endl;
-  //std::cout << "\033[1;06m [06] white font strike thru \033[0m" << std::endl;
-  //std::cout << "\033[1;07m [07] \033[0m" << std::endl;
-  //std::cout << "\033[1;30m [30] dark grey font \033[0m" << std::endl;
-  //std::cout << "\033[1;31m [31] red font \033[0m" << std::endl;
-  //std::cout << "\033[1;33m [33] yellow font \033[0m" << std::endl;
-  //std::cout << "\033[1;34m [34] purple font \033[0m" << std::endl;
 
   int usrpick;
 	bool bQuit = false;
@@ -318,3 +319,4 @@ int main(int argc, char ** argv)
 
 	return 0;
 }
+

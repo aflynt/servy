@@ -36,9 +36,21 @@ public:
                          << mstr << " )"
                          << std::endl;
   }
+  template<class Archive>
+    void serialize(Archive& ar, const unsigned int version)
+    {
+      ar & m_id;
+      ar & m_simname;
+      ar & m_user;
+      ar & m_dir ;
+      ar & m_podkey;
+      ar & m_powerlist;
+      ar & machines;
+    }
+  friend class boost::serialization::access;
 
 private:
-  int  m_id;
+  int    m_id;
   string m_simname;
   string m_user;
   string m_dir ;

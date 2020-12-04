@@ -89,6 +89,7 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/string.hpp>
+#include <boost/serialization/vector.hpp>
 
 #include <boost/asio/streambuf.hpp>
 #include <bits/stdc++.h>
@@ -184,11 +185,12 @@ void fread_astr(Astr& astr)
   ia >> astr;
 }
 
-std::string get_serial_str(const Astr& astr)
+template <typename T>
+std::string get_serial_str(const T& x)
 {
   std::stringstream ss;
   boost::archive::text_oarchive oa(ss);
-  oa << astr;
+  oa << x;
   return ss.str();
 }
 

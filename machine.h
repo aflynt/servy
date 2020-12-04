@@ -72,13 +72,15 @@ private:
 //{
 //  return os << m;
 //}
-std::string get_serial_machine(const machine& m)
-{
-  std::stringstream ss;
-  boost::archive::text_oarchive oa(ss);
-  oa << m;
-  return ss.str();
-}
+
+
+//std::string get_serial_machine(const machine& m)
+//{
+//  std::stringstream ss;
+//  boost::archive::text_oarchive oa(ss);
+//  oa << m;
+//  return ss.str();
+//}
 
 // split "thor:60" with delim : into str and int
 //vector<machine> get_machines( vector<string>& vs) {
