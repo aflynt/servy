@@ -133,20 +133,22 @@ public:
 		Send(msg);
 	}
 
+  void SendRun(const run& arun)
+  {
+		olc::net::message<CustomMsgTypes> msg;
+		msg.header.id = CustomMsgTypes::SendRun;		
+
+    std::string ss = get_serial_str(arun);
+    push_str(msg, ss);
+		Send(msg);
+  }
   void SendMachine(const machine& amachine)
   {
-    // generate a message thing
 		olc::net::message<CustomMsgTypes> msg;
 		msg.header.id = CustomMsgTypes::SendMachine;		
-    //
-    // serialize machine 
-    //std::string ss = get_serial_machine(amachine);
-    std::string ss = get_serial_str(amachine);
 
-    // push serial string
+    std::string ss = get_serial_str(amachine);
     push_str(msg, ss);
-      
-    // send it
 		Send(msg);
   }
   void SendText(const std::string& s)
@@ -246,10 +248,11 @@ int main(int argc, char ** argv)
       std::cout << "\033[1;32mINPUT MACHINES:\033[0m" << std::endl;
       for(auto&m : ivm){
         m.print();
-        c.SendMachine(m);
+        //c.SendMachine(m);
       }
-      //run r1{id,simfile, ivm};
-      //     r1.print();
+      run r1{id,simfile, ivm};
+      r1.print();
+      c.SendRun(r1);
       sendrun = false;
     }
 		if (usrpick == 0) c.SendText(mstring);

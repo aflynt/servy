@@ -79,8 +79,6 @@ std::string pop_str(olc::net::message<T>& msg)
   return sstr;
 }
 
-
-
 class CustomServer : public olc::net::server_interface<CustomMsgTypes>
 {
 public:
@@ -125,18 +123,31 @@ protected:
 			MessageAllClients(new_msg, client);
 		  } break;
 
-    case CustomMsgTypes::SendMachine:{
-			 std::cout << "[" << client->GetID() << "]: Send Machine\n";
-       //
-       // get serialized string
+    case CustomMsgTypes::SendRun:{
+			 std::cout << "[" << client->GetID() << "]: Send Run\n";
        std::string ss = pop_str(msg);
-       //
        // replace archive 17 with archive 16
        std::string str2 ("archive 17");
        std::size_t found = ss.find(str2);
        if (found !=std::string::npos)
          ss.replace(ss.find(str2),str2.length(),"archive 16");
-       //
+
+       // covert from stringstream to class
+       run arun;
+       fwrite_serial(ss); // write the serialized string
+       fread_T(arun);
+       arun.print();
+       
+      }break;
+    case CustomMsgTypes::SendMachine:{
+			 std::cout << "[" << client->GetID() << "]: Send Machine\n";
+       std::string ss = pop_str(msg);
+       // replace archive 17 with archive 16
+       std::string str2 ("archive 17");
+       std::size_t found = ss.find(str2);
+       if (found !=std::string::npos)
+         ss.replace(ss.find(str2),str2.length(),"archive 16");
+
        // covert from stringstream to machine class
        machine amachine;
        fwrite_serial(ss); // write the serialized string

@@ -14,6 +14,7 @@ using namespace std;
 class run{
 
 public:
+  run(){};
   run(int id, const string& simname, vector<machine>mlist):
     m_id(id),
     m_simname(simname),
@@ -29,7 +30,7 @@ public:
     m_powerlist = powerlist;
   }
 
-  void print(){
+  void print() const {
     string mstr = get_machine_str(machines);
     std::cout << "run( " << m_id << ", "
                          << m_simname << ", " 
@@ -37,16 +38,16 @@ public:
                          << std::endl;
   }
   template<class Archive>
-    void serialize(Archive& ar, const unsigned int version)
-    {
-      ar & m_id;
-      ar & m_simname;
-      ar & m_user;
-      ar & m_dir ;
-      ar & m_podkey;
-      ar & m_powerlist;
-      ar & machines;
-    }
+  void serialize(Archive& ar, const unsigned int version)
+  {
+    ar & m_id;
+    ar & m_simname;
+    ar & m_user;
+    ar & m_dir ;
+    ar & m_podkey;
+    ar & m_powerlist;
+    ar & machines;
+  }
   friend class boost::serialization::access;
 
 private:

@@ -102,7 +102,8 @@ enum class CustomMsgTypes : uint32_t
 	MessageAll,
 	ServerMessage,
   SendText,
-  SendMachine
+  SendMachine,
+  SendRun
 };
 
 
