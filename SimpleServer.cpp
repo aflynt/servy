@@ -57,6 +57,60 @@
 #include <iostream>
 #include "olc_net.h"
 
+template <typename T>
+class vqueue {
+public:
+  vqueue(const vector<T>& inq): m_q(inq) {}
+
+  void print() const {
+    for (auto&i : m_q){
+      std::cout << i << " ";
+    }
+    std::cout << std::endl;
+  }
+  std::string print_str() const {
+    std::stringstream ss;
+    for (auto&i : m_q){
+      ss << i << " ";
+    }
+    ss << '\n';
+    return ss.str();
+  }
+  const std::vector<T>& get_q(){
+    return m_q;
+  }
+  void mvup(const T& x){
+    auto result = std::find(std::begin(m_q), std::end(m_q), x);
+
+    if (result != std::end(m_q)) {
+      if (result != std::begin(m_q)){
+        iter_swap(result-1, result);
+      }
+    }
+  }
+  void mvdn(const T& x){
+    auto result = std::find(std::begin(m_q), std::end(m_q), x);
+
+    if (result < std::end(m_q)-1) {
+      std::cout << "moving down\n";
+      iter_swap(result+1, result);
+    }
+  }
+  void add_item(const T& x) {
+    m_q.push_back(x);
+  }
+  void rm_item(const T& x){
+    auto result = std::find(std::begin(m_q), std::end(m_q), x);
+
+    if (result != std::end(m_q)) { // found it
+      m_q.erase(result);
+    }
+  }
+
+private:
+  std::vector<T> m_q;
+};
+
 template<typename T>
 std::string pop_str(olc::net::message<T>& msg)
 {
@@ -176,36 +230,6 @@ protected:
        fread_astr(astr);
        astr.print_str();
 
-       //// RECEIVE A CHAR ARRAY
-       //int n;
-       //msg >> n; 
-
-       //char char_array[n];
-       //
-       //for (int i = 0; i < n; i++){
-       //  msg >> char_array[i];
-       //  std::cout << char_array[i];
-       //}
-       //std::cout << std::endl;
-
-
-       // XXXXXXXXXXXXXXXXXXXXXXXXXXX
-       // XXXXXXXXXXXXXXXXXXXXXXXXXXX
-       // // READ IN THE STRING USING BOOST SERIALIZATION
-       // //std::string filename(boost::archive::tmpdir());
-       // std::string filename("/home/pi");
-       // filename += "/newfile.txt";
-       // Astr astr;
-
-       // restore_astr(astr, filename.c_str());
-       // astr.print_str();
-       // 
-       // // pull in the pushed 1
-       // int n;
-       // msg >> n;
-       // XXXXXXXXXXXXXXXXXXXXXXXXXXX
-       // XXXXXXXXXXXXXXXXXXXXXXXXXXX
-
        // reply back
        /////////////////////////////////////////////
 			 olc::net::message<CustomMsgTypes> new_msg;
@@ -234,10 +258,33 @@ protected:
 	}
 };
 
+void myswapper(vector<int>& v, const int i1, const int i2){
+  iter_swap(v.begin() + i1, v.begin() + i2);
+}
+
 int main()
 {
 	CustomServer server(60000); 
 	server.Start();
+
+  std::vector<int> v{10,20,15,40};
+  vqueue vq(v);
+
+  std::cout << "\nBEFORE:\n";
+  vq.print();
+
+  vq.add_item(25);
+  vq.add_item(23);
+  vq.add_item(24);
+  vq.rm_item(20);
+
+  std::cout << "\nAFTER:\n";
+  vq.print();
+  std::string s = vq.print_str();
+
+  std::cout << "\nSS TRIAL:\n";
+  std::cout << s << '\n';
+
 
 	while (1)
 	{
