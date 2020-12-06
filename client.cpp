@@ -251,7 +251,27 @@ int main(int argc, char ** argv)
         //c.SendMachine(m);
       }
       run r1{id,simfile, ivm};
+      //r1.print();
+
+      run r2{100, simfile, ivm};
+
+      if(r1 < r2) {
+        std::cout << "r1 < r2\n";
+      } 
+      if (r1 > r2){
+        std::cout << "r1 > r2\n";
+      } 
+      if (r1 == r2){
+        std::cout << "r1 == r2\n";
+      } 
+      if (r1 != r2){
+        std::cout << "r1 != r2\n";
+      } 
+
       r1.print();
+      r2.print();
+
+
       c.SendRun(r1);
       sendrun = false;
     }

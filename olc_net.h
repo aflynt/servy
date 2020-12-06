@@ -65,4 +65,5 @@
 #include "net_connection.h"
 #include "machine.h"
 #include "run.h"
+#include "vq.h"
 #endif

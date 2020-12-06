@@ -28,11 +28,17 @@ public:
     m_dir = dir;
     m_podkey = podkey;
     m_powerlist = powerlist;
+    std::stringstream ss;
+    ss << m_user << '_'; 
+    ss << std::setw(5) << std::setfill('0') << m_id;
+    //m_xid = m_user+'_'+to_string(m_id);
+    m_xid = ss.str();
   }
 
   void print() const {
     string mstr = get_machine_str(machines);
-    std::cout << "run( " << m_id << ", "
+    std::cout << "run( " << m_xid << ", "
+                         << m_id  << ", "
                          << m_simname << ", " 
                          << mstr << " )"
                          << std::endl;
@@ -47,8 +53,16 @@ public:
     ar & m_podkey;
     ar & m_powerlist;
     ar & machines;
+    ar & m_xid;
   }
   friend class boost::serialization::access;
+
+  friend inline bool operator==(const run& lhs, const run& rhs);
+  friend inline bool operator!=(const run& lhs, const run& rhs);
+  friend inline bool operator< (const run& lhs, const run& rhs);
+  friend inline bool operator> (const run& lhs, const run& rhs);
+  friend inline bool operator<=(const run& lhs, const run& rhs);
+  friend inline bool operator>=(const run& lhs, const run& rhs);
 
 private:
   int    m_id;
@@ -57,7 +71,15 @@ private:
   string m_dir ;
   string m_podkey;
   string m_powerlist;
+  string m_xid; // extended id;
   vector<machine> machines;
 };
+
+inline bool operator==(const run& lhs, const run& rhs){ return (lhs.m_xid).compare(rhs.m_xid) == 0; }
+inline bool operator!=(const run& lhs, const run& rhs){ return (lhs.m_xid).compare(rhs.m_xid) != 0; }
+inline bool operator< (const run& lhs, const run& rhs){ return (lhs.m_xid).compare(rhs.m_xid) <  0; }
+inline bool operator> (const run& lhs, const run& rhs){ return (lhs.m_xid).compare(rhs.m_xid) >  0; }
+inline bool operator<=(const run& lhs, const run& rhs){ return (lhs.m_xid).compare(rhs.m_xid) <= 0; }
+inline bool operator>=(const run& lhs, const run& rhs){ return (lhs.m_xid).compare(rhs.m_xid) >= 0; }
 
 #endif
