@@ -68,23 +68,9 @@ private:
   int m_res;
   int m_free;
 };
-//std::ostream& operator<<(std::ostream& os, const machine& m)
-//{
-//  return os << m;
-//}
 
-
-//std::string get_serial_machine(const machine& m)
-//{
-//  std::stringstream ss;
-//  boost::archive::text_oarchive oa(ss);
-//  oa << m;
-//  return ss.str();
-//}
-
-// split "thor:60" with delim : into str and int
-//vector<machine> get_machines( vector<string>& vs) {
 std::vector<machine> get_machines( const std::string& mstring) {
+// split "thor:60" with delim : into str and int
     
     // first split on ','
     auto vs = split(mstring, ','); // now have split machines vector of strings
@@ -108,7 +94,6 @@ std::vector<machine> get_machines( const std::string& mstring) {
     }
     return result;
 }
-
 std::string get_machine_str (const std::vector<machine>& machines){
     string mstr = "";
     bool first = true;

@@ -217,45 +217,61 @@ int main()
   //std::vector<int> v{10,20,15,40};
   vqueue<run> vq;
 
-  machine m1("c21",10);
-  machine m2("c22",10);
-  machine m3("c23",10);
-  vector<machine> vm;
-  vm.push_back(m1);
-  vm.push_back(m2);
-  vm.push_back(m3);
+  machine rm1("c21",10);
+  machine rm2("c22",10);
+  machine rm3("c23",10);
+  vector<machine> rmv;
+  rmv.push_back(rm1);
 
-  run r1(101, "foo1.sim", vm);
-  run r2(102, "foo1.sim", vm);
-  run r3(103, "foo1.sim", vm);
+  run r1(101, "foo1.sim", rmv);
+  rmv.push_back(rm2);
+  run r2(102, "foo1.sim", rmv);
+  rmv.push_back(rm3);
+  run r3(103, "foo1.sim", rmv);
 
-  vq.add_item(r1);
-  vq.add_item(r2);
-  vq.add_item(r3);
+  machine cm1("c21",30);
+  machine cm2("c22",30);
+  machine cm3("c23",30);
+  vector<machine> cmv;
+  cmv.push_back(cm1);
+  cmv.push_back(cm2);
+  cmv.push_back(cm3);
 
-  std::cout << "[STATE 1]\n";
-  vq.print();
+  cluster c(cmv);
 
-  while (!vq.empty()){
-    auto rr = vq.pop_front();
-
-    std::cout << "I popped run: " << rr << std::endl;
-    std::cout << "[STATE 2]\n";
-    vq.print();
+  if (c.can_alloc(r1)) {
+    c.alloc(r1);
+    auto cm = c.get_machines();
+    string rname = "R1: ";
+    std::cout << "Alloc " << rname << std::endl;
+    for (machine& m : cm) {
+      m.print();
+      //std::cout << m << std::endl;
+    }
   }
+  if (c.can_alloc(r2)) {
+    c.alloc(r2);
+    auto cm = c.get_machines();
+    string rname = "R2: ";
+    std::cout << "Alloc " << rname << std::endl;
+    for (machine& m : cm) {
+      m.print();
+    }
+  }
+  if (c.can_alloc(r3)) {
+    c.alloc(r3);
+    auto cm = c.get_machines();
+    string rname = "R3: ";
+    std::cout << "Alloc " << rname << std::endl;
+    for (machine& m : cm) {
+      m.print();
+    }
+  }
+  //std::cout << "Can alloc for run#1: " << canRun1 << std::endl;
+  //std::cout << "Can alloc for run#2: " << canRun2 << std::endl;
+  //std::cout << "Can alloc for run#3: " << canRun3 << std::endl;
 
-  //for (int i : v){
-  //  vq.add_item(i);
-  //}
 
-  //std::cout << "\nBEFORE:\n";
-  //vq.print();
-
-
-  //vq.rm_item(20);
-  //std::string s = vq.print_str();
-  //std::cout << "\nSS TRIAL:\n";
-  //std::cout << s << '\n';
 
 	while (1)
 	{

@@ -35,6 +35,9 @@ public:
     m_xid = ss.str();
   }
 
+  const vector<machine>& get_machines() const {
+    return machines;
+  }
   void print() const {
     string mstr = get_machine_str(machines);
     std::cout << "run( " << m_xid << ", "

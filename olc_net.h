@@ -66,4 +66,5 @@
 #include "machine.h"
 #include "run.h"
 #include "vq.h"
+#include "cluster.h"
 #endif
