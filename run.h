@@ -47,19 +47,34 @@ public:
                          << std::endl;
   }
   void execute() const {
-    std::string ccm_home("/shared/thor/apps/starccm/15.02.009-R8/STAR-CCM+15.02.009-R8");
-    std::string ccm_exec(ccm_home+"/star/bin/starccm+");
-    std::string execstr(ccm_exec);
-    execstr += ' ' + m_powerlist;
-    execstr += " -batch -on";
-    std::string mstr = get_machine_str(machines);
-    execstr += ' ' + mstr;
-    execstr += ' ' + m_dir;
-    if(execstr.back() != '/')
-      execstr += '/';
-    execstr += m_simname;
+    //std::string ccm_home("/shared/thor/apps/starccm/15.02.009-R8/STAR-CCM+15.02.009-R8");
+    //std::string ccm_exec(ccm_home+"/star/bin/starccm+");
+    //std::string execstr(ccm_exec);
+    //execstr += ' ' + m_powerlist;
+    //execstr += " -batch -on";
+    //std::string mstr = get_machine_str(machines);
+    //execstr += ' ' + mstr;
+    //execstr += ' ' + m_dir;
+    //if(execstr.back() != '/')
+    //  execstr += '/';
+    //execstr += m_simname;
 
-    std::cout << execstr << std::endl;
+    //std::cout << execstr << std::endl;
+    std::cout << "[START] RUN" << m_xid << "\n";
+
+    //std::system("cntdwn 5");
+    std::string xdir(m_dir);
+    if(xdir.back() != '/')
+      xdir += '/';
+    xdir += m_xid;
+    std::string runcmd("mkdir "+xdir);
+    std::system(runcmd.c_str());
+
+    std::string xcs("cntdwn 5 > ");
+    xcs += xdir + "/res.dat";
+    std::system(xcs.c_str());
+
+    std::cout << "[END] RUN" << m_xid << "\n";
   }
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version)

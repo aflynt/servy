@@ -248,7 +248,8 @@ int main()
       m.print();
       //std::cout << m << std::endl;
     }
-    r1.execute();
+    std::thread t([&](){r1.execute();});
+    t.detach();
   }
   if (c.can_alloc(r2)) {
     c.alloc(r2);
@@ -258,6 +259,8 @@ int main()
     for (machine& m : cm) {
       m.print();
     }
+    std::thread t([&](){r2.execute();});
+    t.detach();
   }
   c.free(r2);
   string rname = "R2: ";
