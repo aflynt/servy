@@ -63,6 +63,15 @@ public:
   friend inline bool operator> (const run& lhs, const run& rhs);
   friend inline bool operator<=(const run& lhs, const run& rhs);
   friend inline bool operator>=(const run& lhs, const run& rhs);
+  friend std::ostream& operator<<(std::ostream& os, const run& obj) {
+    string mstr = get_machine_str(obj.machines);
+    os << "run( " << obj.m_xid << ", "
+                  << obj.m_id  << ", "
+                  << obj.m_simname << ", " 
+                  << mstr << " )";
+    return os;
+  }
+    
 
 private:
   int    m_id;

@@ -214,24 +214,48 @@ int main()
 	CustomServer server(60000); 
 	server.Start();
 
-  std::vector<int> v{10,20,15,40};
-  vqueue vq(v);
+  //std::vector<int> v{10,20,15,40};
+  vqueue<run> vq;
 
-  std::cout << "\nBEFORE:\n";
+  machine m1("c21",10);
+  machine m2("c22",10);
+  machine m3("c23",10);
+  vector<machine> vm;
+  vm.push_back(m1);
+  vm.push_back(m2);
+  vm.push_back(m3);
+
+  run r1(101, "foo1.sim", vm);
+  run r2(102, "foo1.sim", vm);
+  run r3(103, "foo1.sim", vm);
+
+  vq.add_item(r1);
+  vq.add_item(r2);
+  vq.add_item(r3);
+
+  std::cout << "[STATE 1]\n";
   vq.print();
 
-  vq.add_item(25);
-  vq.add_item(23);
-  vq.add_item(24);
-  vq.rm_item(20);
+  while (!vq.empty()){
+    auto rr = vq.pop_front();
 
-  std::cout << "\nAFTER:\n";
-  vq.print();
-  std::string s = vq.print_str();
+    std::cout << "I popped run: " << rr << std::endl;
+    std::cout << "[STATE 2]\n";
+    vq.print();
+  }
 
-  std::cout << "\nSS TRIAL:\n";
-  std::cout << s << '\n';
+  //for (int i : v){
+  //  vq.add_item(i);
+  //}
 
+  //std::cout << "\nBEFORE:\n";
+  //vq.print();
+
+
+  //vq.rm_item(20);
+  //std::string s = vq.print_str();
+  //std::cout << "\nSS TRIAL:\n";
+  //std::cout << s << '\n';
 
 	while (1)
 	{

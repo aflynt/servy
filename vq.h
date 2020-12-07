@@ -11,20 +11,26 @@ public:
   vqueue(const vector<T>& inq): m_q(inq) {}
 
   void print() const {
-    for (auto&i : m_q){
-      std::cout << i << " ";
+    for (const auto&i : m_q){
+      std::cout << i ;
+      std::cout << "\n";
+      //i.print();
     }
     std::cout << std::endl;
   }
   std::string print_str() const {
     std::stringstream ss;
-    for (auto&i : m_q){
-      ss << i << " ";
+    for (const auto&i : m_q){
+      ss << i ;
+      ss << " ";
+      //ss << i << " ";
+      //i.print();
+      //ss << i.print() << " ";
     }
     ss << '\n';
     return ss.str();
   }
-  const std::vector<T>& get_q(){
+  const std::vector<T>& get_q() const{
     return m_q;
   }
   void mvup(const T& x){
@@ -53,6 +59,14 @@ public:
     if (result != std::end(m_q)) { // found it
       m_q.erase(result);
     }
+  }
+  T pop_front() {
+    T tmp = m_q[0]; 
+    m_q.erase(m_q.begin());
+    return tmp;
+  }
+  bool empty() const {
+    return m_q.empty();
   }
 
 private:
