@@ -203,6 +203,12 @@ protected:
 		  } break;
 		}
 	}
+private:
+  std::mutex mu;
+  vqueue<run> vq;
+  std::condition_variable cond;
+  cluster mcluster;
+
 };
 
 void myswapper(vector<int>& v, const int i1, const int i2){

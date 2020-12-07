@@ -62,7 +62,7 @@ public:
     //std::cout << execstr << std::endl;
     std::cout << "[START] RUN" << m_xid << "\n";
 
-    //std::system("cntdwn 5");
+    // make subdirectory
     std::string xdir(m_dir);
     if(xdir.back() != '/')
       xdir += '/';
@@ -70,6 +70,7 @@ public:
     std::string runcmd("mkdir "+xdir);
     std::system(runcmd.c_str());
 
+    // call executable
     std::string xcs("cntdwn 5 > ");
     xcs += xdir + "/res.dat";
     std::system(xcs.c_str());
