@@ -258,6 +258,13 @@ int main()
       m.print();
     }
   }
+  c.free(r2);
+  string rname = "R2: ";
+  std::cout << "FREE " << rname << std::endl;
+  auto cm = c.get_machines();
+  for (machine& m : cm) {
+    m.print();
+  }
   if (c.can_alloc(r3)) {
     c.alloc(r3);
     auto cm = c.get_machines();

@@ -48,7 +48,7 @@ bool cluster::can_alloc(const run& r) const {
   return canRun;
 };
 void cluster::alloc(const run& r) {
-  // allocate run's machines onto cluster machines
+  // allocate run's machines on cluster machines
  
   for (auto& rm : r.get_machines()){ // for all run machines
     auto rname = rm.get_name();
@@ -57,6 +57,20 @@ void cluster::alloc(const run& r) {
       auto cname = cm.get_name();
       if (rname == cname) { // found requested machine
         cm.alloc(rsize);    // reserve run's size
+      }
+    }
+  }
+}
+void cluster::free(const run& r) {
+  // deallocate run's machines on cluster machines
+ 
+  for (auto& rm : r.get_machines()){ // for all run machines
+    auto rname = rm.get_name();
+    auto rsize = rm.get_size();
+    for (auto& cm : machines) {  // for all cluster machines
+      auto cname = cm.get_name();
+      if (rname == cname) { // found requested machine
+        cm.free(rsize);     // free run's size
       }
     }
   }
