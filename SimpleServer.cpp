@@ -248,6 +248,7 @@ int main()
       m.print();
       //std::cout << m << std::endl;
     }
+    r1.execute();
   }
   if (c.can_alloc(r2)) {
     c.alloc(r2);
