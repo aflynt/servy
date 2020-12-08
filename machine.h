@@ -20,10 +20,10 @@ public:
   int get_free() const { return m_size-m_res;}
 
   void print(){
-    std::cout << m_name <<
-      " srf: " << setw(2) << m_size   <<
-      " | " << setw(2) << m_res    <<
-      " | " << setw(2) << m_free   << std::endl;
+    std::cout  << setw(10) << m_name <<
+      " srf: " << setw(2)  << m_size <<
+      " | "    << setw(2)  << m_res  <<
+      " | "    << setw(2)  << m_free << std::endl;
   }
 
   int alloc(const int n){
@@ -93,6 +93,14 @@ std::vector<machine> get_machines( const std::string& mstring) {
       result.push_back(machine{name,numcores});
     }
     return result;
+}
+std::vector<machine> fget_machines( const std::string& fname) {
+  std::ifstream ifs(fname, std::ifstream::in);
+  std::string mstring;
+  ifs >> mstring;
+
+  vector<machine> vm = get_machines(mstring);
+  return vm;
 }
 std::string get_machine_str (const std::vector<machine>& machines){
     string mstr = "";

@@ -71,7 +71,8 @@ public:
     std::system(runcmd.c_str());
 
     // call executable
-    std::string xcs("cntdwn 5 > ");
+    //std::string xcs("cntdwn 5 > ");
+    std::string xcs("echo it works > ");
     xcs += xdir + "/res.dat";
     std::system(xcs.c_str());
 

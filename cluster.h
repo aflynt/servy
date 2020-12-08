@@ -9,6 +9,9 @@ public:
   cluster(){};
   cluster(const vector<machine>& mlist): machines(mlist) {}
 
+  void add_machine(const machine& m){
+    machines.push_back(m);
+  }
   bool can_alloc(const run& r) const;
   void alloc(const run& r);
   void free(const run& r);

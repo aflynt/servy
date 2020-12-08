@@ -60,6 +60,9 @@ public:
       m_q.erase(result);
     }
   }
+  const T& front() {
+    return m_q.front();
+  }
   T pop_front() {
     T tmp = m_q[0]; 
     m_q.erase(m_q.begin());

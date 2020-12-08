@@ -85,8 +85,44 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes>
 public:
 	CustomServer(uint16_t nPort) : olc::net::server_interface<CustomMsgTypes>(nPort)
 	{
+    // init the machine cluster
+    auto vm = fget_machines("cluster_machines.dat");
+    for(auto m : vm){
+      mcluster.add_machine(m);
+      m.print();
+    }
+
+    // point thread to handle_runs()
+    runthread = std::thread([this]() { handle_runs(); });
+
 
 	}
+
+  void handle_runs() {
+    while(canHandle) {
+      std::unique_lock<mutex> locker(mu);
+      cond.wait(locker, [this](){ return !vq.empty() && 
+                   mcluster.can_alloc(vq.front()); }); //wake when ready
+      run arun = vq.pop_front();
+      locker.unlock();
+      std::cout << "RUNNING Run: " << arun << std::endl;
+      std::thread trun(&CustomServer::execute_run, this, arun);
+      trun.detach();
+    }
+  }
+
+  void execute_run(run arun){
+      std::cout << "thread run: " << arun << std::endl;
+      arun.execute();
+
+      // free machine resources
+      std::unique_lock<mutex> locker(mu);
+
+      mcluster.free(arun);
+      cond.notify_one();
+
+      locker.unlock();
+  }
 
 protected:
 	virtual bool OnClientConnect(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client)
@@ -137,8 +173,14 @@ protected:
        run arun;
        fwrite_serial(ss); // write the serialized string
        fread_T(arun);
-       arun.print();
-       
+
+       // finally have a real run
+       //arun.print();
+       // push it into my vq<runs> vq
+       std::unique_lock<mutex> locker(mu);
+       vq.add_item(arun);
+       locker.unlock();
+       cond.notify_one();
       }break;
     case CustomMsgTypes::SendMachine:{
 			 std::cout << "[" << client->GetID() << "]: Send Machine\n";
@@ -208,12 +250,9 @@ private:
   vqueue<run> vq;
   std::condition_variable cond;
   cluster mcluster;
-
+  std::thread runthread;
+  bool canHandle = true;
 };
-
-void myswapper(vector<int>& v, const int i1, const int i2){
-  iter_swap(v.begin() + i1, v.begin() + i2);
-}
 
 int main()
 {
