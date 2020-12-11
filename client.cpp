@@ -186,6 +186,22 @@ private:
   std::string m_powerlist;
 };
 
+
+void get_userpick(std::atomic<int>& usrpick, std::atomic<bool>& gotnews){
+  int tmp;
+  while (1) {
+    std::cin >> tmp;
+    usrpick = tmp;
+    //std::cin >> usrpick;
+    gotnews = true;
+    //if (tmp != usrpick) {
+    //  usrpick = tmp;
+    //  gotnews = true;
+    //}
+    //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  }
+}
+
 int main(int argc, char ** argv)
 {
   bool sendrun = false;
@@ -232,14 +248,17 @@ int main(int argc, char ** argv)
   std::string mstring = "run x with 128 cores";
 
 
-  int usrpick;
+  //std::atomic<int> usrpick;
+  std::atomic<bool> gotnews {false};
+  std::atomic<int> usrpick  {-99};
+  std::thread t1(get_userpick, std::ref(usrpick),std::ref(gotnews));
 	bool bQuit = false;
 	while (!bQuit)
 	{
-    if(1)
-		{
-      std::cin >> usrpick;
-		}
+    //if(1)
+		//{
+    //  std::cin >> usrpick;
+		//}
 
 		if (sendrun) 
     {
@@ -248,38 +267,19 @@ int main(int argc, char ** argv)
       std::cout << "\033[1;32mINPUT MACHINES:\033[0m" << std::endl;
       for(auto&m : ivm){
         m.print();
-        //c.SendMachine(m);
       }
       run r1{id,simfile, ivm};
-      //r1.print();
-
-      run r2{100, simfile, ivm};
-
-      if(r1 < r2) {
-        std::cout << "r1 < r2\n";
-      } 
-      if (r1 > r2){
-        std::cout << "r1 > r2\n";
-      } 
-      if (r1 == r2){
-        std::cout << "r1 == r2\n";
-      } 
-      if (r1 != r2){
-        std::cout << "r1 != r2\n";
-      } 
-
-      r1.print();
-      r2.print();
-
 
       c.SendRun(r1);
       sendrun = false;
     }
-		if (usrpick == 0) c.SendText(mstring);
-		if (usrpick == 1) c.PingServer();
-		if (usrpick == 2) c.MessageAll();
-		if (usrpick == 3) bQuit = true;
-
+    if(gotnews){
+		  if (usrpick == 0) c.SendText(mstring);
+		  if (usrpick == 1) c.PingServer();
+		  if (usrpick == 2) c.MessageAll();
+		  if (usrpick == 3) bQuit = true;
+      gotnews = false;
+    }
 
 		if (c.IsConnected()) // c is connected
 		{
