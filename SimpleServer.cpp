@@ -103,6 +103,7 @@ public:
       cond.wait(locker, [this](){ return !vq.empty() && 
                    mcluster.can_alloc(vq.front()); }); //wake when ready
       run arun = vq.pop_front();
+      mcluster.alloc(arun);
       locker.unlock();
       std::cout << "RUNNING Run: " << arun << std::endl;
       std::thread trun(&CustomServer::execute_run, this, arun);
