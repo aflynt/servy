@@ -71,6 +71,7 @@
   //std::cout << "\033[1;34m [34] purple font \033[0m" << std::endl;
 */
 #include "olc_net.h"
+bool bQuit = false;
 
 template<typename T>
 void push_str(olc::net::message<T>& msg, const std::string& s)
@@ -189,16 +190,10 @@ private:
 
 void get_userpick(std::atomic<int>& usrpick, std::atomic<bool>& gotnews){
   int tmp;
-  while (1) {
+  while (!bQuit) {
     std::cin >> tmp;
     usrpick = tmp;
-    //std::cin >> usrpick;
     gotnews = true;
-    //if (tmp != usrpick) {
-    //  usrpick = tmp;
-    //  gotnews = true;
-    //}
-    //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
 }
 
@@ -232,10 +227,6 @@ int main(int argc, char ** argv)
           id = std::stoi(tmpstr);
         }
       }
-      //callstr += "> result.dat";
-      //rtrim(callstr);
-      //std::cout << "SET TO CALL: " << callstr << std::endl;
-      //std::system(callstr.c_str());
     }
   }
 
@@ -252,13 +243,8 @@ int main(int argc, char ** argv)
   std::atomic<bool> gotnews {false};
   std::atomic<int> usrpick  {-99};
   std::thread t1(get_userpick, std::ref(usrpick),std::ref(gotnews));
-	bool bQuit = false;
 	while (!bQuit)
 	{
-    //if(1)
-		//{
-    //  std::cin >> usrpick;
-		//}
 
 		if (sendrun) 
     {
@@ -277,7 +263,11 @@ int main(int argc, char ** argv)
 		  if (usrpick == 0) c.SendText(mstring);
 		  if (usrpick == 1) c.PingServer();
 		  if (usrpick == 2) c.MessageAll();
-		  if (usrpick == 3) bQuit = true;
+		  if (usrpick == 3){
+			  bQuit = true;
+        t1.join();
+        continue;
+      }
       gotnews = false;
     }
 
@@ -337,6 +327,7 @@ int main(int argc, char ** argv)
 		{
 			std::cout << "Server Down\n";
 			bQuit = true;
+      t1.join();
 		}
 	}
 

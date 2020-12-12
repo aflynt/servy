@@ -72,7 +72,7 @@ public:
 
     // call executable
     //std::string xcs("cntdwn 5 > ");
-    std::string xcs("echo it works > ");
+    std::string xcs("cntdn 60 > ");
     xcs += xdir + "/res.dat";
     std::system(xcs.c_str());
 

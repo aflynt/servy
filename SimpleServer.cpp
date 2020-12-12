@@ -85,7 +85,7 @@ class CustomServer : public olc::net::server_interface<CustomMsgTypes>
 public:
 	CustomServer(uint16_t nPort) : olc::net::server_interface<CustomMsgTypes>(nPort)
 	{
-    // init the machine cluster
+    // build the machine cluster
     auto vm = fget_machines("cluster_machines.dat");
     for(auto m : vm){
       mcluster.add_machine(m);
