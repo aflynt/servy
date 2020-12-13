@@ -104,23 +104,40 @@ public:
                    mcluster.can_alloc(vq.front()); }); //wake when ready
       run arun = vq.pop_front();
       mcluster.alloc(arun);
+
+      std::cout << "STARTING RUN: " << arun << std::endl;
+      std::cout << print_qstatus();
+
       locker.unlock();
-      std::cout << "RUNNING Run: " << arun << std::endl;
       std::thread trun(&CustomServer::execute_run, this, arun);
       trun.detach();
     }
   }
   void execute_run(run arun){
-      std::cout << "thread run: " << arun << std::endl;
       arun.execute();
 
       // free machine resources
       std::unique_lock<mutex> locker(mu);
 
       mcluster.free(arun);
-      cond.notify_one();
 
+      cond.notify_one();
       locker.unlock();
+  }
+
+  std::string print_qstatus(){
+    std::stringstream ss;
+
+    ss << "== Q STATUS ==\n";
+    ss << vq.print_str();
+
+    ss << std::endl;
+    ss << "== CLUSTER STATUS ==\n";
+    auto qms = mcluster.get_machines();
+    for(auto m : qms){
+      ss << m.print_str();
+    }
+    return ss.str();
   }
 
 protected:
@@ -148,7 +165,6 @@ protected:
 			// Simply bounce message back to client
 			client->Send(msg);
 		  } break;
-
 		case CustomMsgTypes::MessageAll:{
 			std::cout << "[" << client->GetID() << "]: Message All\n";
 
@@ -158,7 +174,6 @@ protected:
 			new_msg << client->GetID();
 			MessageAllClients(new_msg, client);
 		  } break;
-
     case CustomMsgTypes::SendRun:{
 			 std::cout << "[" << client->GetID() << "]: Send Run\n";
        std::string ss = pop_str(msg);
@@ -180,14 +195,8 @@ protected:
        std::unique_lock<mutex> locker(mu);
        vq.add_item(arun);
 
-       std::cout << " Q STATUS:\n";
-       vq.print();
+       std::cout << print_qstatus();
 
-       std::cout << " CLUSTER STATUS\n";
-       auto qms = mcluster.get_machines();
-       for(auto m : qms){
-         m.print();
-       }
        locker.unlock();
        cond.notify_one();
       }break;

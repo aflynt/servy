@@ -21,13 +21,8 @@ public:
   std::string print_str() const {
     std::stringstream ss;
     for (const auto&i : m_q){
-      ss << i ;
-      ss << " ";
-      //ss << i << " ";
-      //i.print();
-      //ss << i.print() << " ";
+      ss << i << std::endl;
     }
-    ss << '\n';
     return ss.str();
   }
   const std::vector<T>& get_q() const{

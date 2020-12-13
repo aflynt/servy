@@ -19,11 +19,19 @@ public:
   int get_res()  const { return m_res;}
   int get_free() const { return m_size-m_res;}
 
-  void print(){
+  void print() const {
     std::cout  << setw(10) << m_name <<
       " srf: " << setw(2)  << m_size <<
       " | "    << setw(2)  << m_res  <<
       " | "    << setw(2)  << m_free << std::endl;
+  }
+  std::string print_str() const {
+    std::stringstream ss;
+    ss         << setw(10) << m_name <<
+      " srf: " << setw(2)  << m_size <<
+      " | "    << setw(2)  << m_res  <<
+      " | "    << setw(2)  << m_free << std::endl;
+    return ss.str();
   }
 
   int alloc(const int n){
