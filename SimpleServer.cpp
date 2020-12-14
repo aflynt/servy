@@ -160,11 +160,11 @@ protected:
 	{
 		switch (msg.header.id){
 		case CustomMsgTypes::ServerPing:{
-			std::cout << "[" << client->GetID() << "]: Server Ping\n";
+		  std::cout << "[" << client->GetID() << "]: Server Ping\n";
 
 			// Simply bounce message back to client
 			client->Send(msg);
-		  } break;
+		} break;
 		case CustomMsgTypes::MessageAll:{
 			std::cout << "[" << client->GetID() << "]: Message All\n";
 
@@ -173,93 +173,119 @@ protected:
 			new_msg.header.id = CustomMsgTypes::ServerMessage;
 			new_msg << client->GetID();
 			MessageAllClients(new_msg, client);
-		  } break;
+		} break;
     case CustomMsgTypes::SendRun:{
-			 std::cout << "[" << client->GetID() << "]: Send Run\n";
-       std::string ss = pop_str(msg);
-       // replace archive 17 with archive 16
-       std::string str2 ("archive 17");
-       std::size_t found = ss.find(str2);
-       if (found !=std::string::npos)
-         ss.replace(ss.find(str2),str2.length(),"archive 16");
+			std::cout << "[" << client->GetID() << "]: Send Run\n";
+      std::string ss = pop_str(msg);
+      // replace archive 17 with archive 16
+      std::string str2 ("archive 17");
+      std::size_t found = ss.find(str2);
+      if (found !=std::string::npos)
+        ss.replace(ss.find(str2),str2.length(),"archive 16");
 
-       // covert from stringstream to class
-       run arun;
-       fwrite_serial(ss); // write the serialized string
-       fread_T(arun);
+      // covert from stringstream to class
+      run arun;
+      fwrite_serial(ss); // write the serialized string
+      fread_T(arun);
 
-       // finally have a real run
-       //arun.print();
-       
-       // push it into my vq<runs> vq
-       std::unique_lock<mutex> locker(mu);
-       vq.add_item(arun);
+      // finally have a real run
+      //arun.print();
+      
+      // push it into my vq<runs> vq
+      std::unique_lock<mutex> locker(mu);
+      vq.add_item(arun);
 
-       std::cout << print_qstatus();
+      std::cout << print_qstatus();
 
-       locker.unlock();
-       cond.notify_one();
-      }break;
+      locker.unlock();
+      cond.notify_one();
+    }break;
     case CustomMsgTypes::SendMachine:{
-			 std::cout << "[" << client->GetID() << "]: Send Machine\n";
-       std::string ss = pop_str(msg);
-       // replace archive 17 with archive 16
-       std::string str2 ("archive 17");
-       std::size_t found = ss.find(str2);
-       if (found !=std::string::npos)
-         ss.replace(ss.find(str2),str2.length(),"archive 16");
+			std::cout << "[" << client->GetID() << "]: Send Machine\n";
+      std::string ss = pop_str(msg);
+      // replace archive 17 with archive 16
+      std::string str2 ("archive 17");
+      std::size_t found = ss.find(str2);
+      if (found !=std::string::npos)
+        ss.replace(ss.find(str2),str2.length(),"archive 16");
 
-       // covert from stringstream to machine class
-       machine amachine;
-       fwrite_serial(ss); // write the serialized string
-       fread_T(amachine);
-       amachine.print();
-       
-      }break;
+      // covert from stringstream to machine class
+      machine amachine;
+      fwrite_serial(ss); // write the serialized string
+      fread_T(amachine);
+      amachine.print();
+    }break;
 		case CustomMsgTypes::SendText:{
-			 std::cout << "[" << client->GetID() << "]: Send Text\n";
-       
-       // new pop str method
-       // get serialized string
-       std::string ss = pop_str(msg);
+			std::cout << "[" << client->GetID() << "]: Send Text\n";
+      
+      // new pop str method
+      // get serialized string
+      std::string ss = pop_str(msg);
 
-       // replace archive 17 with archive 16
-       std::string str2 ("archive 17");
-       std::size_t found = ss.find(str2);
-       if (found !=std::string::npos)
-         ss.replace(ss.find(str2),str2.length(),"archive 16");
+      // replace archive 17 with archive 16
+      std::string str2 ("archive 17");
+      std::size_t found = ss.find(str2);
+      if (found !=std::string::npos)
+        ss.replace(ss.find(str2),str2.length(),"archive 16");
 
-       // covert from stringstream to astr class
-       Astr astr;
-       //std::stringstream str_strm(ss);
-       fwrite_astr(ss);
-       fread_astr(astr);
-       astr.print_str();
+      // covert from stringstream to astr class
+      Astr astr;
+      //std::stringstream str_strm(ss);
+      fwrite_astr(ss);
+      fread_astr(astr);
+      astr.print_str();
 
-       // reply back
-       /////////////////////////////////////////////
-			 olc::net::message<CustomMsgTypes> new_msg;
-			 new_msg.header.id = CustomMsgTypes::SendText;
+      // reply back
+      /////////////////////////////////////////////
+			olc::net::message<CustomMsgTypes> new_msg;
+			new_msg.header.id = CustomMsgTypes::SendText;
 
-       // push uid
-       uint32_t uid = client->GetID();
-       new_msg << uid;
+      //// push uid
+      //uint32_t uid = client->GetID();
+      //new_msg << uid;
 
-       std::string outstr = "[APPROVED]";
-       int n = outstr.length()+1;
-       char char_array[n];
-       strcpy(char_array, outstr.c_str());
-       
-       // push string
-       for (int i = n-1; i >= 0; i--)
-         new_msg << char_array[i];
+      std::string outstr = "[APPROVED]";
+      int n = outstr.length()+1;
+      char char_array[n];
+      strcpy(char_array, outstr.c_str());
+      
+      // push string
+      for (int i = n-1; i >= 0; i--)
+        new_msg << char_array[i];
 
-       // push string length
-       new_msg << n;
+      // push string length
+      new_msg << n;
 
-       // send back modified string
-			 client->Send(new_msg);
-		  } break;
+      // send back modified string
+			client->Send(new_msg);
+		} break;
+		case CustomMsgTypes::Qstatus:{
+			std::cout << "[" << client->GetID() << "]: Qstatus\n";
+      
+      // reply back
+      /////////////////////////////////////////////
+			olc::net::message<CustomMsgTypes> new_msg;
+			new_msg.header.id = CustomMsgTypes::SendText;
+
+      // out message string
+      std::unique_lock<mutex> locker(mu);
+      std::string outstr = print_qstatus();
+      locker.unlock();
+
+      int n = outstr.length()+1;
+      char char_array[n];
+      strcpy(char_array, outstr.c_str());
+      
+      // push string
+      for (int i = n-1; i >= 0; i--)
+        new_msg << char_array[i];
+
+      // push string length
+      new_msg << n;
+
+      // send back modified string
+			client->Send(new_msg);
+		} break;
 		}
 	}
 private:

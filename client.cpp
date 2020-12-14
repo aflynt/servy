@@ -173,6 +173,13 @@ public:
     // send it
 		Send(msg);
   }
+  void Qstatus()
+  {
+    // generate a message thing
+		olc::net::message<CustomMsgTypes> msg;
+		msg.header.id = CustomMsgTypes::Qstatus;		
+		Send(msg);
+  }
 private:
   std::string m_ip;
   std::string m_user;
@@ -288,13 +295,14 @@ int main(int argc, char ** argv)
       sendrun = false;
     }
     if(gotnews){
-		  if (usrpick == 0) c.SendText(mstring);
-		  if (usrpick == 1) c.PingServer();
-		  if (usrpick == 2) c.MessageAll();
-		  if (usrpick == 3){
+		  if (usrpick == 1) c.SendText(mstring);
+		  if (usrpick == 2) c.PingServer();
+		  if (usrpick == 3) c.MessageAll();
+		  if (usrpick == 4) c.Qstatus();
+		  if (usrpick == 0){
 			  bQuit = true;
         t1.join();
-        continue;
+        break;
       }
       gotnews = false;
     }
@@ -342,10 +350,10 @@ int main(int argc, char ** argv)
           }
           std::string smsg(char_array);
 
-          // pop uid
-          uint32_t uid;
-          msg >> uid;
-					std::cout << "Server says: (" << smsg << ") for uid: " << uid << "\n";
+          //// pop uid
+          //uint32_t uid;
+          //msg >> uid;
+					std::cout << smsg << "\n";
 
 				  } break;
 				}
