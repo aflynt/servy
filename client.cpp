@@ -198,11 +198,10 @@ int main(int argc, char ** argv)
   std::string simfile = "BAD";
   std::string run_cmd = "BAD";
   std::string machstr = "BAD";
-  if (argc > 1 ) {
+  if (argc > 1 ) { // parse if args are passed
     if (strcmp("-r",argv[1]) == 0 ||
         strcmp("-run",argv[1]) == 0 ){
       sendrun = true;
-      std::cout << "calling the following args" << std::endl;
       for (int i = 2; i < argc; i++)
       {
         if (strcmp("-u",argv[i]) == 0) { // user
@@ -235,20 +234,28 @@ int main(int argc, char ** argv)
     } // DONE PARSE RUN
     // CHECK Environment vars for args not passed
     if (user    == "BAD") user    = safe_getenv("USER");
-    if (id == -1)    id = std::stoi(safe_getenv("RUN_ID"));
     if (dir     == "BAD") dir     = safe_getenv("PWD");
     if (simfile == "BAD") simfile = safe_getenv("SIM_NAME");
     if (run_cmd == "BAD") run_cmd = safe_getenv("RUN_COMMAND");
     if (machstr == "BAD") machstr = safe_getenv("MACHINES");
+    if (id == -1){
+      std::string tmpstr = safe_getenv("RUN_ID");
+      if (tmpstr != "BAD")
+        id = std::stoi(safe_getenv("RUN_ID"));
+      else {
+        std::cout << "ERROR: no args to -id and no RUN_ID env var\n";
+        return 0; // bail out
+      }
+    }
+    std::cout << "AFTER PARSING:" << std::endl;
+    std::cout << "user: "    << user << std::endl;
+    std::cout << "id: "      << id << std::endl;
+    std::cout << "dir: "     << dir << std::endl;
+    std::cout << "simfile: " << simfile << std::endl;
+    std::cout << "run_cmd: " << run_cmd << std::endl;
+    std::cout << "machstr: " << machstr << std::endl;
   } // DONE PARSE ARGS
 
-  std::cout << "AFTER PARSING:" << std::endl;
-  std::cout << "user: "    << user << std::endl;
-  std::cout << "id: "      << id << std::endl;
-  std::cout << "dir: "     << dir << std::endl;
-  std::cout << "simfile: " << simfile << std::endl;
-  std::cout << "run_cmd: " << run_cmd << std::endl;
-  std::cout << "machstr: " << machstr << std::endl;
 
 
   std::string ip{safe_getenv("BOOST_IP")};

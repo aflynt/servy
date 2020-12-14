@@ -53,19 +53,9 @@ public:
                          << std::endl;
   }
   void execute() const {
-    //std::string ccm_home("/shared/thor/apps/starccm/15.02.009-R8/STAR-CCM+15.02.009-R8");
-    //std::string ccm_exec(ccm_home+"/star/bin/starccm+");
-    //std::string execstr(ccm_exec);
-    //execstr += " -batch -on";
-    //std::string mstr = get_machine_str(machines);
-    //execstr += ' ' + mstr;
-    //execstr += ' ' + m_dir;
-    //if(execstr.back() != '/')
-    //  execstr += '/';
-    //execstr += m_sim_name;
 
     //std::cout << execstr << std::endl;
-    std::cout << "[START] RUN" << m_xid << "\n";
+    std::cout << "[EXE RUN] " << m_xid << "\n";
 
     // make subdirectory
     std::string xdir(m_dir);
@@ -76,12 +66,13 @@ public:
     std::system(runcmd.c_str());
 
     // call executable
-    //std::string xcs("cntdwn 5 > ");
-    std::string xcs("cntdn 60 > ");
-    xcs += xdir + "/res.dat";
+    //std::string xcs("cntdn 60 ");
+    std::string xcs{m_run_cmd};
+
+    xcs += " > " + xdir + "/res.dat";
     std::system(xcs.c_str());
 
-    std::cout << "[END] RUN" << m_xid << "\n";
+    std::cout << "[END RUN] " << m_xid << "\n";
   }
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version)
