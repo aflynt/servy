@@ -9,30 +9,34 @@
 #include "net_common.h"
 #include "machine.h"
 
-
 using namespace std;
 class run{
 
 public:
-  run(){};
-  run(int id, const string& simname, vector<machine>mlist):
+  run(){
+    std::string env_user{safe_getenv("USER")};
+    m_user = env_user;
+    m_id = 0;
+    ctor_helper();
+  };
+  run(const string& user, int id): m_user(user), m_id(id) {
+    ctor_helper();
+  };
+  run(string user,
+      int id,
+      string dir,
+      string sim_name,
+      string run_cmd,
+      vector<machine>mlist
+      ):
+    m_user(user),
     m_id(id),
-    m_simname(simname),
+    m_dir(dir),
+    m_sim_name(sim_name),
+    m_run_cmd(run_cmd),
     machines(mlist)
   {
-    std::string user{safe_getenv("USER")};
-    std::string dir {safe_getenv("PWD")};
-    std::string podkey {safe_getenv("PODKEY")};
-    std::string powerlist {safe_getenv("POWERLIST")};
-    m_user = user;
-    m_dir = dir;
-    m_podkey = podkey;
-    m_powerlist = powerlist;
-    std::stringstream ss;
-    ss << m_user << '_'; 
-    ss << std::setw(5) << std::setfill('0') << m_id;
-    //m_xid = m_user+'_'+to_string(m_id);
-    m_xid = ss.str();
+    ctor_helper();
   }
 
   const vector<machine>& get_machines() const {
@@ -40,9 +44,11 @@ public:
   }
   void print() const {
     string mstr = get_machine_str(machines);
-    std::cout << "run( " << m_xid << ", "
-                         << m_id  << ", "
-                         << m_simname << ", " 
+    std::cout << "run( " << m_user << ", "
+                         << m_id   << ", "
+                         << m_dir  << ", "
+                         << m_sim_name << ", " 
+                         << m_run_cmd.substr(0,10)  << ", " 
                          << mstr << " )"
                          << std::endl;
   }
@@ -50,14 +56,13 @@ public:
     //std::string ccm_home("/shared/thor/apps/starccm/15.02.009-R8/STAR-CCM+15.02.009-R8");
     //std::string ccm_exec(ccm_home+"/star/bin/starccm+");
     //std::string execstr(ccm_exec);
-    //execstr += ' ' + m_powerlist;
     //execstr += " -batch -on";
     //std::string mstr = get_machine_str(machines);
     //execstr += ' ' + mstr;
     //execstr += ' ' + m_dir;
     //if(execstr.back() != '/')
     //  execstr += '/';
-    //execstr += m_simname;
+    //execstr += m_sim_name;
 
     //std::cout << execstr << std::endl;
     std::cout << "[START] RUN" << m_xid << "\n";
@@ -82,13 +87,12 @@ public:
   void serialize(Archive& ar, const unsigned int version)
   {
     ar & m_id;
-    ar & m_simname;
     ar & m_user;
     ar & m_dir ;
-    ar & m_podkey;
-    ar & m_powerlist;
-    ar & machines;
+    ar & m_sim_name;
+    ar & m_run_cmd;
     ar & m_xid;
+    ar & machines;
   }
   friend class boost::serialization::access;
 
@@ -100,21 +104,26 @@ public:
   friend inline bool operator>=(const run& lhs, const run& rhs);
   friend std::ostream& operator<<(std::ostream& os, const run& obj) {
     string mstr = get_machine_str(obj.machines);
-    os << "run( " << obj.m_xid << ", "
-                  << obj.m_id  << ", "
-                  << obj.m_simname << ", " 
+    os << "run( " << obj.m_user << ", "
+                  << obj.m_id   << ", "
+                  << obj.m_dir  << ", "
+                  << obj.m_sim_name << ", " 
+                  << obj.m_run_cmd.substr(0,10)  << ", " 
                   << mstr << " )";
     return os;
   }
-    
-
 private:
+  void ctor_helper(){
+    std::stringstream ss;
+    ss << m_user << '_'; 
+    ss << std::setw(5) << std::setfill('0') << m_id;
+    m_xid = ss.str();
+  }
   int    m_id;
-  string m_simname;
   string m_user;
   string m_dir ;
-  string m_podkey;
-  string m_powerlist;
+  string m_sim_name;
+  string m_run_cmd;
   string m_xid; // extended id;
   vector<machine> machines;
 };

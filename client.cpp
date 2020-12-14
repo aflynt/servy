@@ -98,12 +98,8 @@ public:
 	  Connect(ip, port);
     std::string user{safe_getenv("USER")};
     std::string dir {safe_getenv("PWD")};
-    std::string podkey {safe_getenv("PODKEY")};
-    std::string powerlist {safe_getenv("POWERLIST")};
     m_user = user;
     m_dir = dir;
-    m_podkey = podkey;
-    m_powerlist = powerlist;
   }
 
   void print_state()
@@ -111,8 +107,6 @@ public:
     std::cout << "IP:     " <<     m_ip << std::endl;
     std::cout << "USER:   " <<   m_user << std::endl;
     std::cout << "DIR:    " <<    m_dir << std::endl;
-    std::cout << "PODKEY: " << m_podkey << std::endl;
-    std::cout << "PWRLIST:" << m_powerlist << std::endl;
   }
 
 	void PingServer()	
@@ -183,8 +177,6 @@ private:
   std::string m_ip;
   std::string m_user;
   std::string m_dir ;
-  std::string m_podkey;
-  std::string m_powerlist;
 };
 
 
@@ -200,10 +192,12 @@ void get_userpick(std::atomic<int>& usrpick, std::atomic<bool>& gotnews){
 int main(int argc, char ** argv)
 {
   bool sendrun = false;
-  int id;
-  std::string simfile;
-  std::string machstr;
-  std::string callstr;
+  std::string user    = "BAD";
+  int id = -1;
+  std::string dir     = "BAD";
+  std::string simfile = "BAD";
+  std::string run_cmd = "BAD";
+  std::string machstr = "BAD";
   if (argc > 1 ) {
     if (strcmp("-r",argv[1]) == 0 ||
         strcmp("-run",argv[1]) == 0 ){
@@ -211,24 +205,50 @@ int main(int argc, char ** argv)
       std::cout << "calling the following args" << std::endl;
       for (int i = 2; i < argc; i++)
       {
-        if (strcmp("-f",argv[i]) == 0) { // file argument
+        if (strcmp("-u",argv[i]) == 0) { // user
           std::string tmpstr{argv[++i]};
-          simfile = tmpstr;
+          user = tmpstr;
         }
-
-        if (strcmp("-m",argv[i]) == 0 || // machines
-            strcmp("-on",argv[i]) == 0) {
+        if (strcmp("-d",argv[i]) == 0) { // directory
           std::string tmpstr{argv[++i]};
-          machstr = tmpstr;
+          dir = tmpstr;
         }
         if (strcmp("-i",argv[i]) == 0 || // id
             strcmp("-id",argv[i]) == 0) {
           std::string tmpstr{argv[++i]};
           id = std::stoi(tmpstr);
         }
+        if (strcmp("-f",argv[i]) == 0) { // file
+          std::string tmpstr{argv[++i]};
+          simfile = tmpstr;
+        }
+        if (strcmp("-c",argv[i]) == 0) { // run command 
+          std::string tmpstr{argv[++i]};
+          run_cmd = tmpstr;
+        }
+        if (strcmp("-m",argv[i]) == 0 || // machines
+            strcmp("-on",argv[i]) == 0) {
+          std::string tmpstr{argv[++i]};
+          machstr = tmpstr;
+        }
       }
-    }
-  }
+    } // DONE PARSE RUN
+    // CHECK Environment vars for args not passed
+    if (user    == "BAD") user    = safe_getenv("USER");
+    if (id == -1)    id = std::stoi(safe_getenv("RUN_ID"));
+    if (dir     == "BAD") dir     = safe_getenv("PWD");
+    if (simfile == "BAD") simfile = safe_getenv("SIM_NAME");
+    if (run_cmd == "BAD") run_cmd = safe_getenv("RUN_COMMAND");
+    if (machstr == "BAD") machstr = safe_getenv("MACHINES");
+  } // DONE PARSE ARGS
+
+  std::cout << "AFTER PARSING:" << std::endl;
+  std::cout << "user: "    << user << std::endl;
+  std::cout << "id: "      << id << std::endl;
+  std::cout << "dir: "     << dir << std::endl;
+  std::cout << "simfile: " << simfile << std::endl;
+  std::cout << "run_cmd: " << run_cmd << std::endl;
+  std::cout << "machstr: " << machstr << std::endl;
 
 
   std::string ip{safe_getenv("BOOST_IP")};
@@ -254,7 +274,16 @@ int main(int argc, char ** argv)
       for(auto&m : ivm){
         m.print();
       }
-      run r1{id,simfile, ivm};
+      // contruct a run
+      //run r1{id,simfile, ivm};
+      // std::string user    = "BAD";
+      // int id;
+      // std::string dir     = "BAD";
+      // std::string simfile = "BAD";
+      // std::string run_cmd = "BAD";
+      // std::string machstr = "BAD";
+
+      run r1{user, id, dir, simfile, run_cmd, ivm};
 
       c.SendRun(r1);
       sendrun = false;
