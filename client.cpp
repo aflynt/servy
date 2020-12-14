@@ -192,8 +192,8 @@ void get_userpick(std::atomic<int>& usrpick, std::atomic<bool>& gotnews){
 int main(int argc, char ** argv)
 {
   bool sendrun = false;
-  std::string user    = "BAD";
   int id = -1;
+  std::string user    = "BAD";
   std::string dir     = "BAD";
   std::string simfile = "BAD";
   std::string run_cmd = "BAD";
@@ -281,14 +281,6 @@ int main(int argc, char ** argv)
       for(auto&m : ivm){
         m.print();
       }
-      // contruct a run
-      //run r1{id,simfile, ivm};
-      // std::string user    = "BAD";
-      // int id;
-      // std::string dir     = "BAD";
-      // std::string simfile = "BAD";
-      // std::string run_cmd = "BAD";
-      // std::string machstr = "BAD";
 
       run r1{user, id, dir, simfile, run_cmd, ivm};
 
