@@ -76,7 +76,7 @@ bool bQuit = false;
 template<typename T>
 void push_str(olc::net::message<T>& msg, const std::string& s)
 {
-  std::cout << "trying to send: [" << s <<  "]" << std::endl;
+  //std::cout << "trying to send: [" << s <<  "]" << std::endl;
 
   // PUSH A TEXT STRING OVER USING A CHAR
   uint16_t n = s.length()+1;
@@ -185,7 +185,17 @@ public:
 		olc::net::message<CustomMsgTypes> msg;
 		msg.header.id = CustomMsgTypes::MoveRunUp;		
 
-    std::cout << "Client MVUP with run: " << arun << std::endl;
+    //std::cout << "Client MVUP with run: " << arun << std::endl;
+    std::string ss = get_serial_str(arun);
+    push_str(msg, ss);
+		Send(msg);
+  }
+  void MoveRunDown(run arun)
+  {
+		olc::net::message<CustomMsgTypes> msg;
+		msg.header.id = CustomMsgTypes::MoveRunDown;		
+
+    //std::cout << "Client MVUP with run: " << arun << std::endl;
     std::string ss = get_serial_str(arun);
     push_str(msg, ss);
 		Send(msg);
@@ -312,6 +322,10 @@ int main(int argc, char ** argv)
 		  if (usrpick == 5) {
         run rr{user,5};
         c.MoveRunUp(rr);
+      }
+		  if (usrpick == 6) {
+        run rr{user,6};
+        c.MoveRunDown(rr);
       }
 		  if (usrpick == 0){
 			  bQuit = true;

@@ -110,7 +110,6 @@ enum class CustomMsgTypes : uint32_t
   RemoveRun
 };
 
-
 class Astr {
 public:
   Astr() { s= "foo";}
@@ -152,9 +151,6 @@ void restore_astr(Astr& astr, const char* filename)
   ia >> astr;
 }
 
-//void chg2astr(Astr& astr, std::stringstream& ss)
-//
-//
 void fwrite_serial(const std::string& ss)
 {
   // write string to file
@@ -162,7 +158,7 @@ void fwrite_serial(const std::string& ss)
   ofs << ss;
   ofs.close();
 }
-//
+
 void fwrite_astr(const std::string& ss)
 {
   // write string to file
@@ -214,7 +210,6 @@ std::string safe_getenv(const char * var){
   }
   return rstr;
 }
-
 
 std::vector<std::string> split(const std::string& s, char delim) {
   std::vector<std::string> result;
