@@ -104,7 +104,10 @@ enum class CustomMsgTypes : uint32_t
   SendText,
   SendMachine,
   SendRun,
-  Qstatus
+  Qstatus,
+  MoveRunUp,
+  MoveRunDown,
+  RemoveRun
 };
 
 

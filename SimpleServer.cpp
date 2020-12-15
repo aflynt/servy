@@ -200,6 +200,33 @@ protected:
       locker.unlock();
       cond.notify_one();
     }break;
+    case CustomMsgTypes::MoveRunUp:{
+			std::cout << "[" << client->GetID() << "]: Move Run Up\n";
+      std::string ss = pop_str(msg);
+      // replace archive 17 with archive 16
+      std::string str2 ("archive 17");
+      std::size_t found = ss.find(str2);
+      if (found !=std::string::npos)
+        ss.replace(ss.find(str2),str2.length(),"archive 16");
+
+      // covert from stringstream to class
+      run arun;
+      std::unique_lock<mutex> locker(mu);
+      fwrite_serial(ss); // write the serialized string to file
+      fread_T(arun);     // read serialized type from file
+
+      // finally have a real run
+      std::cout << "LOOKING TO MVUP RUN: " << arun;
+      //arun.print();
+      
+      // move the reference run up
+      vq.mvup(arun);
+
+      std::cout << print_qstatus();
+
+      locker.unlock();
+      cond.notify_one();
+    }break;
     case CustomMsgTypes::SendMachine:{
 			std::cout << "[" << client->GetID() << "]: Send Machine\n";
       std::string ss = pop_str(msg);

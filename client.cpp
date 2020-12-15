@@ -180,6 +180,16 @@ public:
 		msg.header.id = CustomMsgTypes::Qstatus;		
 		Send(msg);
   }
+  void MoveRunUp(run arun)
+  {
+		olc::net::message<CustomMsgTypes> msg;
+		msg.header.id = CustomMsgTypes::MoveRunUp;		
+
+    std::cout << "Client MVUP with run: " << arun << std::endl;
+    std::string ss = get_serial_str(arun);
+    push_str(msg, ss);
+		Send(msg);
+  }
 private:
   std::string m_ip;
   std::string m_user;
@@ -299,6 +309,10 @@ int main(int argc, char ** argv)
 		  if (usrpick == 2) c.PingServer();
 		  if (usrpick == 3) c.MessageAll();
 		  if (usrpick == 4) c.Qstatus();
+		  if (usrpick == 5) {
+        run rr{user,5};
+        c.MoveRunUp(rr);
+      }
 		  if (usrpick == 0){
 			  bQuit = true;
         t1.join();

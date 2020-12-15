@@ -32,8 +32,12 @@ public:
     auto result = std::find(std::begin(m_q), std::end(m_q), x);
 
     if (result != std::end(m_q)) {
+        std::cout << "found run: " << x;
       if (result != std::begin(m_q)){
         iter_swap(result-1, result);
+      }
+      else {
+        std::cout << "cant find run: " << x;
       }
     }
   }
