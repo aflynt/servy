@@ -247,6 +247,30 @@ protected:
       locker.unlock();
       cond.notify_one();
     }break;
+    case CustomMsgTypes::RemoveRun:{
+			std::cout << "[" << client->GetID() << "]: Remove Run\n";
+      std::string ss = pop_str(msg);
+
+      // replace archive 17 with archive 16
+      std::string str2 ("archive 17");
+      std::size_t found = ss.find(str2);
+      if (found !=std::string::npos)
+        ss.replace(ss.find(str2),str2.length(),"archive 16");
+
+      // covert from stringstream to class
+      run arun;
+      std::unique_lock<mutex> locker(mu);
+      fwrite_serial(ss); // write the serialized string to file
+      fread_T(arun);     // read serialized type from file
+
+      // remove the reference run
+      vq.rm_item(arun);
+
+      std::cout << print_qstatus();
+
+      locker.unlock();
+      cond.notify_one();
+    }break;
     case CustomMsgTypes::SendMachine:{
 			std::cout << "[" << client->GetID() << "]: Send Machine\n";
       std::string ss = pop_str(msg);
@@ -356,74 +380,3 @@ int main()
 	
 	return 0;
 }
-
-/*
-  //std::vector<int> v{10,20,15,40};
-  //vqueue<run> vq;
-
-  //machine rm1("c21",10);
-  //machine rm2("c22",10);
-  //machine rm3("c23",10);
-  //vector<machine> rmv;
-  //rmv.push_back(rm1);
-
-  //run r1(101, "foo1.sim", rmv);
-  //rmv.push_back(rm2);
-  //run r2(102, "foo1.sim", rmv);
-  //rmv.push_back(rm3);
-  //run r3(103, "foo1.sim", rmv);
-
-  //machine cm1("c21",30);
-  //machine cm2("c22",30);
-  //machine cm3("c23",30);
-  //vector<machine> cmv;
-  //cmv.push_back(cm1);
-  //cmv.push_back(cm2);
-  //cmv.push_back(cm3);
-
-  //cluster c(cmv);
-
-  //if (c.can_alloc(r1)) {
-  //  c.alloc(r1);
-  //  auto cm = c.get_machines();
-  //  string rname = "R1: ";
-  //  std::cout << "Alloc " << rname << std::endl;
-  //  for (machine& m : cm) {
-  //    m.print();
-  //    //std::cout << m << std::endl;
-  //  }
-  //  std::thread t([&](){r1.execute();});
-  //  t.detach();
-  //}
-  //if (c.can_alloc(r2)) {
-  //  c.alloc(r2);
-  //  auto cm = c.get_machines();
-  //  string rname = "R2: ";
-  //  std::cout << "Alloc " << rname << std::endl;
-  //  for (machine& m : cm) {
-  //    m.print();
-  //  }
-  //  std::thread t([&](){r2.execute();});
-  //  t.detach();
-  //}
-  //c.free(r2);
-  //string rname = "R2: ";
-  //std::cout << "FREE " << rname << std::endl;
-  //auto cm = c.get_machines();
-  //for (machine& m : cm) {
-  //  m.print();
-  //}
-  //if (c.can_alloc(r3)) {
-  //  c.alloc(r3);
-  //  auto cm = c.get_machines();
-  //  string rname = "R3: ";
-  //  std::cout << "Alloc " << rname << std::endl;
-  //  for (machine& m : cm) {
-  //    m.print();
-  //  }
-  //}
-  ////std::cout << "Can alloc for run#1: " << canRun1 << std::endl;
-  ////std::cout << "Can alloc for run#2: " << canRun2 << std::endl;
-  ////std::cout << "Can alloc for run#3: " << canRun3 << std::endl;
-*/
-

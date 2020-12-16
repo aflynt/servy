@@ -200,6 +200,16 @@ public:
     push_str(msg, ss);
 		Send(msg);
   }
+
+  void RemoveRun(run arun)
+  {
+		olc::net::message<CustomMsgTypes> msg;
+		msg.header.id = CustomMsgTypes::RemoveRun;		
+
+    std::string ss = get_serial_str(arun);
+    push_str(msg, ss);
+		Send(msg);
+  }
 private:
   std::string m_ip;
   std::string m_user;
@@ -326,6 +336,10 @@ int main(int argc, char ** argv)
 		  if (usrpick == 6) {
         run rr{user,6};
         c.MoveRunDown(rr);
+      }
+		  if (usrpick == 7) {
+        run rr{user,7};
+        c.RemoveRun(rr);
       }
 		  if (usrpick == 0){
 			  bQuit = true;
