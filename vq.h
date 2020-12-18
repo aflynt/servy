@@ -70,6 +70,9 @@ public:
   bool empty() const {
     return m_q.empty();
   }
+  int size() const {
+    return m_q.size();
+  }
 
 private:
   std::vector<T> m_q;

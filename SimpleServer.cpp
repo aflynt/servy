@@ -119,25 +119,34 @@ public:
       // free machine resources
       std::unique_lock<mutex> locker(mu);
 
-      mcluster.free(arun);
+      mcluster.free(arun);      // return the allocated machines
+      if(done_runs.size() > 5)  // too large, cut it down
+      {
+        done_runs.pop_front();
+      }
+      done_runs.add_item(arun); // add run to list of done runs
 
       cond.notify_one();
       locker.unlock();
   }
 
   std::string print_qstatus(){
-    std::stringstream ss;
+      std::stringstream ss;
 
-    ss << "== Q STATUS ==\n";
-    ss << vq.print_str();
+      ss << "== Q STATUS ==\n";
+      ss << vq.print_str();
+      ss << std::endl;
 
-    ss << std::endl;
-    ss << "== CLUSTER STATUS ==\n";
-    auto qms = mcluster.get_machines();
-    for(auto m : qms){
-      ss << m.print_str();
-    }
-    return ss.str();
+      ss << "== DONE RUNS ==\n";
+      ss << done_runs.print_str();
+      ss << std::endl;
+
+      ss << "== CLUSTER STATUS ==\n";
+      auto qms = mcluster.get_machines();
+      for(auto m : qms){
+        ss << m.print_str();
+      }
+      return ss.str();
   }
 
 protected:
@@ -362,6 +371,7 @@ protected:
 private:
   std::mutex mu;
   vqueue<run> vq;
+  vqueue<run> done_runs;
   std::condition_variable cond;
   cluster mcluster;
   std::thread runthread;
