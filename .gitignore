@@ -31,6 +31,9 @@
 *.out
 *.app
 
+#user_00*
+*_0000[0-9]
+
 servy
 clientel
 foobar.txt

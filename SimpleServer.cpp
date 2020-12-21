@@ -50,7 +50,7 @@
 
 	Author
 	~~~~~~
-	David Barr, aka javidx9, ©OneLoneCoder 2019, 2020
+	David Barr, aka javidx9, ï¿½OneLoneCoder 2019, 2020
 
 */
 
@@ -103,6 +103,7 @@ public:
       cond.wait(locker, [this](){ return !vq.empty() && 
                    mcluster.can_alloc(vq.front()); }); //wake when ready
       run arun = vq.pop_front();
+      active_runs.add_item(arun);
       mcluster.alloc(arun);
 
       std::cout << "STARTING RUN: " << arun << std::endl;
@@ -124,6 +125,7 @@ public:
       {
         done_runs.pop_front();
       }
+      active_runs.rm_item(arun); // add run to list of done runs
       done_runs.add_item(arun); // add run to list of done runs
 
       cond.notify_one();
@@ -135,6 +137,10 @@ public:
 
       ss << "== Q STATUS ==\n";
       ss << vq.print_str();
+      ss << std::endl;
+
+      ss << "== ACTIVE RUNS ==\n";
+      ss << active_runs.print_str();
       ss << std::endl;
 
       ss << "== DONE RUNS ==\n";
@@ -372,6 +378,7 @@ private:
   std::mutex mu;
   vqueue<run> vq;
   vqueue<run> done_runs;
+  vqueue<run> active_runs;
   std::condition_variable cond;
   cluster mcluster;
   std::thread runthread;
